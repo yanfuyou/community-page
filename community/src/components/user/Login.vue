@@ -68,6 +68,7 @@ export default {
                     }
                     window.localStorage.setItem("Bearer",res.data.records.tokenId);
                     this.$store.commit('user/setUser',user);
+                    this.$router.push('/index')
                     this.$notify.success({
                         message: res.data.msg,
                         offset: 70

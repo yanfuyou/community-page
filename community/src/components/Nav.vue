@@ -36,6 +36,7 @@
               <span class="el-dropdown-link">
                 <el-avatar :src="avatar.src"></el-avatar>
               </span>
+              <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
               <el-dropdown-menu slot="dropdown">
                 <el-badge :value="2" class="item" type="warning">
                   <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item>
@@ -43,7 +44,7 @@
                 <!-- <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item> -->
                 <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-user-solid">退出</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -81,6 +82,15 @@ export default {
     },
     dump(path) {
       this.$router.push(path);
+    },
+    logout() {
+      let user = {
+        id: '',
+        userName: '',
+        userAlias: '',
+        loginFlag: false
+      }
+      this.$store.commit('user/setUser', user);
     }
   },
 };
@@ -91,14 +101,20 @@ export default {
   width: 100%;
   /* 固定导航栏 */
   position: fixed;
-  z-index:9999;
+  z-index: 9999;
 }
-#top{
+
+#top {
   width: 100%;
 }
+
 #search {
   width: 500px;
   margin-left: 400px;
+}
+
+.write {
+  margin-left: 30px;
 }
 
 .el-select .el-input {
@@ -137,7 +153,8 @@ export default {
   margin-top: 5px;
   margin-right: 5px;
 }
-#tag{
+
+#tag {
   margin-left: 110px;
 }
 </style>

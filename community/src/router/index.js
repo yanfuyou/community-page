@@ -8,6 +8,8 @@ import Index from '../components/index/Index'
 import Login from '../components/user/Login'
 // 注册
 import SignUp from '../components/user/SignUp'
+// 文章
+import Write from '../components/article/Write'
 const routes = [
     {
         path: '/',
@@ -32,6 +34,18 @@ const routes = [
                 component: SignUp,
                 meta: { title: '注册' }
             }
+        ]
+    },
+    {
+        path: '/article',
+        component: Body,
+        children: [
+            {
+                path: 'write',
+                component: Write,
+                meta: {title: '写文章'}
+            }
+
         ]
     }
 ]
