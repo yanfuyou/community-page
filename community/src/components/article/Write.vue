@@ -1,6 +1,6 @@
 <template>
     <div id="write">
-        <el-row :gutter="50">
+        <el-row :gutter="30">
             <el-col :span="6">
                 <el-input type="text" placeholder="请输入主题" v-model="title" maxlength="20" show-word-limit>
                 </el-input>
@@ -11,8 +11,20 @@
                     </el-option>
                 </el-select>
             </el-col>
-            <el-col :span="6">
-                <div class="grid-content bg-purple"></div>
+            <el-col :span="3">
+                <el-upload class="upload-demo" :show-file-list="false" action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange" :file-list="fileList">
+                    <el-button size="small" type="primary">附件</el-button>
+                </el-upload>
+                <!-- 需要做修改 -->
+                <span v-if="true" class="fileClass">上传的附件名<i class="el-icon-delete-solid"></i></span>
+            </el-col>
+            <el-col :span="3">
+                <el-upload class="upload-demo" :show-file-list="false" action="https://jsonplaceholder.typicode.com/posts/"
+                    :on-change="handleChange" :file-list="fileList">
+                    <el-button size="small" type="primary">封面</el-button>
+                </el-upload>
+                <span v-if="true" class="fileClass">上传的封面名<i class="el-icon-delete-solid"></i></span>
             </el-col>
             <el-col :span="4">
                 <el-button round @click="out">存草稿</el-button>
@@ -53,6 +65,10 @@ export default {
                 label: '北京烤鸭'
             }],
             value1: [],
+            fileList: [{
+                name: 'food.jpeg',
+                url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+            }],
             toolbars: {
                 bold: true, // 粗体
                 italic: true, // 斜体
@@ -105,19 +121,31 @@ export default {
                 console.log(error);
                 alert("系统异常");
             })
+        },
+        handleChange(file, fileList) {
+            this.fileList = fileList.slice(-3);
         }
     }
 }
 </script>
 <style lang="scss">
 .el-col {
-    .el-input--suffix,.el-select__tags {
+
+    .el-input--suffix,
+    .el-select__tags {
         width: 220% !important;
     }
-}
-#write{
-    // margin-top: 20px;
-    // padding-top: 20px;
-    // position: fixed;
+    .upload-demo {
+        display: inline;
+    }
+    .el-upload {
+        display: inline;
+    }
+    .fileClass{
+        margin-left: 10px;
+    }
+    i{
+        margin-left: 5px;
+    }
 }
 </style>

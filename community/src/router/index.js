@@ -10,6 +10,7 @@ import Login from '../components/user/Login'
 import SignUp from '../components/user/SignUp'
 // 文章
 import Write from '../components/article/Write'
+import Preview from '../components/article/Preview'
 const routes = [
     {
         path: '/',
@@ -44,6 +45,11 @@ const routes = [
                 path: 'write',
                 component: Write,
                 meta: {title: '写文章'}
+            },
+            {
+                path: 'preview',
+                component: Preview,
+                meta: {title: '文章详情'}
             }
 
         ]
