@@ -95,13 +95,13 @@ export default {
   },
 };
 </script>
-
-<style>
+<!-- 原本没有scoped 因为.el-button--primary加的 -->
+<style scoped>
 #head {
   width: 100%;
   /* 固定导航栏 */
   position: fixed;
-  z-index: 9999;
+  z-index: 999;
 }
 
 #top {

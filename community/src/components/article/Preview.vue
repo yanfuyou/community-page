@@ -1,7 +1,7 @@
 <template>
     <div id="out">
         <el-container id="one-con">
-            <el-aside width="400px">
+            <el-aside style="background-color:aliceblue" width="400px">
                 <UserDetail></UserDetail>
             </el-aside>
             <el-container>
@@ -29,8 +29,37 @@
                             </mavon-editor>
                         </el-col>
                     </el-row>
+                    <el-row>
+                        <el-col :span="24">
+                            <el-empty description="暂无评论" v-if="this.comments.length==0"></el-empty>
+                            <el-card class="box-card" style="line-height:5px" v-else>
+                                <div slot="header" class="clearfix">
+                                    <el-badge :value="this.comments.length" class="item">
+                                        <el-button size="small">评论</el-button>
+                                    </el-badge>
+                                    <el-button style="float: right; padding: 0px" type="text" @click="writeComment">写评论
+                                    </el-button>
+                                </div>
+                                <div v-for="(comment,index) in comments" :key="index" class="text item">
+                                    <el-avatar :size="30"
+                                        :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
+                                    </el-avatar>
+                                    {{comment.msg }}
+                                </div>
+                            </el-card>
+                        </el-col>
+                        <!-- 用来写评论 -->
+                        <el-dialog title="评论" :visible.sync="dialogVisible">
+                            <el-input type="textarea" :rows="3" placeholder="不超过两百字哦。" v-model="commentVal">
+                            </el-input>
+                            <span slot="footer" class="dialog-footer">
+                                <el-button @click="dialogVisible = false">取 消</el-button>
+                                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                            </span>
+                        </el-dialog>
+                    </el-row>
+
                 </el-main>
-                <!-- <el-footer>Footer</el-footer> -->
             </el-container>
         </el-container>
     </div>
@@ -44,16 +73,75 @@ export default {
             value: '::: hljs-center\n\n# 文本\n\n:::\n',
             title: '',
             value1: '',
-            options: []
+            options: [],
+            // 写评论标识
+            dialogVisible: false,
+            // 输入的评论信息
+            commentVal:'',
+            // 评论信息
+            comments: [
+                {
+                    // 发言人
+                    UserId: '鄢富友',
+                    // 信息
+                    msg: '这是一条评论',
+                    // 时间
+                    createTime: '2022-09-20',
+                    // 子评论
+                    childComments: [
+                        {
+                            // 发言人
+                            UserId: '鄢富友',
+                            // 信息
+                            msg: '这是二条评论',
+                            // 时间
+                            createTime: '2022-09-20',
+                            // 子评论
+                            childComments: []
+                        }
+                    ]
+                },
+                {
+                    // 发言人
+                    UserId: '鄢富友',
+                    // 信息
+                    msg: '这是一条评论',
+                    // 时间
+                    createTime: '2022-09-20',
+                    // 子评论
+                    childComments: [
+                        {
+                            // 发言人
+                            UserId: '鄢富友',
+                            // 信息
+                            msg: '这是二条评论',
+                            // 时间
+                            createTime: '2022-09-20',
+                            // 子评论
+                            childComments: []
+                        }
+                    ]
+                }
+            ]
         }
     },
     components: {
         UserDetail
+    },
+    methods: {
+        writeComment() {
+            this.dialogVisible = true;
+        }
     }
 }
 </script>
 
-<style>
+<style lang="scss">
+.el-dialog__wrapper,.el-dialog {
+    height: 400px;
+    line-height: 0;
+}
+
 .el-header,
 .el-footer {
     background-color: #B3C0D1;
@@ -95,5 +183,27 @@ body>.el-container {
 
 #one-con {
     height: 100%;
+}
+
+.el-card__header {
+    height: 36px;
+}
+
+.item {
+    margin-bottom: 18px;
+}
+
+.clearfix:before,
+.clearfix:after {
+    display: table;
+    content: "";
+}
+
+.clearfix:after {
+    clear: both
+}
+
+.box-card {
+    text-align: left;
 }
 </style>

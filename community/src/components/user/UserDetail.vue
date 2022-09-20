@@ -40,8 +40,15 @@
                         江苏省苏州市吴中区吴中大道 1188 号
                     </el-descriptions-item>
                 </el-descriptions>
-                </el-col>
-            </el-row>
+            </el-col>
+        </el-row>
+        <el-row>
+            <el-col :span="24">
+                <el-rate v-model="value" :icon-classes="this.iconClasses" void-icon-class="icon-rate-face-off"
+                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
+                </el-rate>
+            </el-col>
+        </el-row>
     </div>
 </template>
 
@@ -53,7 +60,11 @@ export default {
             circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
             squareUrl: "https://cube.elemecdn.com/9/c2/f0ee8a3c7c9638a54940382568c9dpng.png",
             sizeList: ["large", "medium", "small"],
-            size: ''
+            size: '',
+            // 评分用的
+            value: null,
+            iconClasses: ['icon-rate-face-1', 'icon-rate-face-2', 'icon-rate-face-3'] 
+            // 等同于 { 2: 'icon-rate-face-1', 4: { value: 'icon-rate-face-2', excluded: true }, 5: 'icon-rate-face-3' }
         };
     },
 
@@ -69,7 +80,7 @@ export default {
 </script>
 
 <style scoped>
-/* .el-tag{
-    display: inline-block;
-} */
+.el-aside{
+    line-height: 20px !important;
+}
 </style>
