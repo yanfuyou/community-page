@@ -37,7 +37,8 @@
                                     <el-badge :value="this.comments.length" class="item">
                                         <el-button size="small">评论</el-button>
                                     </el-badge>
-                                    <el-button style="float: right; padding: 0px" type="text" @click="writeComment">写评论
+                                    <el-button style="float: right; padding: 0px" type="text" @click="writeComment"><i
+                                            class="el-icon-edit"></i>写评论
                                     </el-button>
                                 </div>
                                 <div v-for="(comment,index) in comments" :key="index" class="text item">
@@ -58,7 +59,6 @@
                             </span>
                         </el-dialog>
                     </el-row>
-
                 </el-main>
             </el-container>
         </el-container>
@@ -77,7 +77,7 @@ export default {
             // 写评论标识
             dialogVisible: false,
             // 输入的评论信息
-            commentVal:'',
+            commentVal: '',
             // 评论信息
             comments: [
                 {
@@ -137,7 +137,8 @@ export default {
 </script>
 
 <style lang="scss">
-.el-dialog__wrapper,.el-dialog {
+.el-dialog__wrapper,
+.el-dialog {
     height: 400px;
     line-height: 0;
 }

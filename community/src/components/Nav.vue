@@ -32,7 +32,7 @@
         </el-menu-item>
         <el-menu-item id="user" v-else>
           <div>
-            <el-dropdown trigger="click">
+            <el-dropdown>
               <span class="el-dropdown-link">
                 <el-avatar :src="avatar.src"></el-avatar>
               </span>
@@ -41,7 +41,7 @@
                 <el-badge :value="2" class="item" type="warning">
                   <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item>
                 </el-badge>
-                <!-- <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item> -->
+                <el-dropdown-item icon="el-icon-bell" @click.native="dump('/user/userhome')">主页</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-setting">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
@@ -97,6 +97,10 @@ export default {
 </script>
 <!-- 原本没有scoped 因为.el-button--primary加的 -->
 <style scoped>
+.el-badge {
+  margin-bottom: 0px;
+}
+
 #head {
   width: 100%;
   /* 固定导航栏 */

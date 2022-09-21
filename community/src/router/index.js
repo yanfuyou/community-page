@@ -2,15 +2,15 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 Vue.use(VueRouter)
 import Body from '../components/Body'
-// 首页
+// 用户
 import Index from '../components/index/Index'
-// 登录
 import Login from '../components/user/Login'
-// 注册
 import SignUp from '../components/user/SignUp'
+import UserHome from '../components/user/UserHome'
 // 文章
 import Write from '../components/article/Write'
 import Preview from '../components/article/Preview'
+
 const routes = [
     {
         path: '/',
@@ -34,6 +34,10 @@ const routes = [
                 path: 'signup',
                 component: SignUp,
                 meta: { title: '注册' }
+            }, {
+                path: 'userhome',
+                component: UserHome,
+                meta: {title:'用户主页'}
             }
         ]
     },
@@ -44,12 +48,12 @@ const routes = [
             {
                 path: 'write',
                 component: Write,
-                meta: {title: '写文章'}
+                meta: { title: '写文章' }
             },
             {
                 path: 'preview',
                 component: Preview,
-                meta: {title: '文章详情'}
+                meta: { title: '文章详情' }
             }
 
         ]

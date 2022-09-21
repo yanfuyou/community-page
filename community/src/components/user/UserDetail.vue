@@ -2,7 +2,7 @@
     <div>
         <el-row>
             <el-col :span="24">
-                <el-avatar shape="square" :size="100" :src="squareUrl"></el-avatar>
+                <el-avatar id="avatar" shape="square" :size="100" :src="squareUrl"></el-avatar>
                 <el-descriptions class="margin-top" :column="2" :size="size" border>
                     <el-descriptions-item>
                         <template slot="label">
@@ -44,9 +44,7 @@
         </el-row>
         <el-row>
             <el-col :span="24">
-                <el-rate v-model="value" :icon-classes="this.iconClasses" void-icon-class="icon-rate-face-off"
-                    :colors="['#99A9BF', '#F7BA2A', '#FF9900']">
-                </el-rate>
+                <el-rate v-model="value" :max="10" @change="change()"></el-rate>
             </el-col>
         </el-row>
     </div>
@@ -73,7 +71,9 @@ export default {
     },
 
     methods: {
-
+        change(){
+            console.log('新的分值：',this.value);
+        }
     },
 };
 
@@ -82,5 +82,8 @@ export default {
 <style scoped>
 .el-aside{
     line-height: 20px !important;
+}
+#avatar{
+    margin-top:20px;
 }
 </style>
