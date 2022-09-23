@@ -180,6 +180,7 @@ body>.el-container {
 
 #out {
     height: 98%;
+    margin: 10px 50px auto 50px;
 }
 
 #one-con {

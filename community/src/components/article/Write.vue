@@ -148,4 +148,7 @@ export default {
         margin-left: 5px;
     }
 }
+#write{
+    margin: 20px 40px auto 40px;
+}
 </style>

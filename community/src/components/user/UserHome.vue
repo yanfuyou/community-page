@@ -14,8 +14,6 @@
                                 <span>鄢富友</span>
                                 <i class="el-icon-time">一年</i>
                                 <i style="float:right;margin-right:80px;" class="el-icon-setting" title="设置"></i>
-
-
                             </div>
                         </el-col>
                     </el-row>
@@ -37,13 +35,20 @@
                 </el-col>
             </el-row>
             <el-row>
-
+                <el-container style="height: auto; border: 1px solid #eee">
+                    <el-aside width="300px" style="background-color: rgb(238, 241, 246);">
+                    </el-aside>
+                    <el-container>
+                        <MyArticle></MyArticle>
+                    </el-container>
+                </el-container>
             </el-row>
         </div>
     </div>
 </template>
 
 <script>
+import MyArticle from './MyArticle.vue'
 export default {
     data() {
         return {
@@ -53,6 +58,9 @@ export default {
 
             }
         }
+    },
+    components: {
+        MyArticle
     }
 }
 </script>
@@ -65,13 +73,30 @@ export default {
     padding: 0;
 
     #userHome {
-        height: 800px;
-        margin: 50px 300px auto 300px;
+        min-height: 800px;
+        margin: 10px 200px auto 200px;
+        padding: 0px;
     }
 }
 
+// #tags {
+//     background-color: aliceblue;
+// }
+
+.el-header {
+    // background-color: #B3C0D1;
+    color: #333;
+    line-height: 60px;
+}
+
+.el-aside {
+    background-color: rgba(108,118,135,1);
+    color: #333;
+    opacity: 0.5;
+}
+
 #head {
-    height: 200px;
+    height: 170px;
     background: #8393a5c9;
 
     #name {

@@ -17,7 +17,7 @@
         <el-menu-item index="5" @click="dump('/article/preview')">消息中心</el-menu-item>
         <el-menu-item id="search">
           <el-input placeholder="请输入内容" v-model="searchVal" class="input-with-select">
-            <el-select v-model="type" slot="prepend" placeholder="请选择">
+            <el-select style="width:150px;" v-model="type" slot="prepend" placeholder="请选择">
               <el-option label="全部" value="1"></el-option>
               <el-option label="餐厅名" value="2"></el-option>
               <el-option label="订单号" value="3"></el-option>
@@ -113,8 +113,7 @@ export default {
 }
 
 #search {
-  width: 500px;
-  margin-left: 400px;
+  margin-left: 40px;
 }
 
 .write {

@@ -77,7 +77,7 @@ export default {
 
 <style lang="scss">
 #index {
-    margin-top: 20px;
+    margin: 30px 20px auto 20px;
 }
 
 .type {
