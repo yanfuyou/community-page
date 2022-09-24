@@ -7,6 +7,7 @@ import Index from '../components/index/Index'
 import Login from '../components/user/Login'
 import SignUp from '../components/user/SignUp'
 import UserHome from '../components/user/UserHome'
+import Setting from '../components/user/Setting'
 // 文章
 import Write from '../components/article/Write'
 import Preview from '../components/article/Preview'
@@ -38,6 +39,11 @@ const routes = [
                 path: 'userhome',
                 component: UserHome,
                 meta: {title:'用户主页'}
+            },
+            {
+                path: 'setting',
+                component: Setting,
+                meta: {title: '设置'}
             }
         ]
     },
