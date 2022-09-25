@@ -28,7 +28,7 @@
             </el-col>
             <el-col :span="4">
                 <el-button round @click="out">存草稿</el-button>
-                <el-button round @click="out">发布</el-button>
+                <el-button round @click="release">发布</el-button>
             </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -43,9 +43,11 @@
 </template>
 
 <script>
+import {nano, nanoid} from 'nanoid'
 export default {
     data() {
         return {
+            id:'',
             value: '# 文本',
             title: '',
             options: [{
@@ -124,6 +126,18 @@ export default {
         },
         handleChange(file, fileList) {
             this.fileList = fileList.slice(-3);
+        },
+        release(){
+            let articleInfo = {
+                id: nanoid(30),
+                articleName: this.title,
+                articleContent: this.value
+            }
+            this.$http.post('/article/release',articleInfo).then(res => {
+                console.log(res);
+            }).catch(error => {
+
+            })
         }
     }
 }
@@ -133,7 +147,7 @@ export default {
 
     .el-input--suffix,
     .el-select__tags {
-        width: 220% !important;
+        width: 170% !important;
     }
     .upload-demo {
         display: inline;

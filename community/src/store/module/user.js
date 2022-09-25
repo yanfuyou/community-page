@@ -5,7 +5,7 @@ const user = {
             id: '',
             userName: '',
             userAlias: '',
-            loginFlag: true
+            loginFlag: false
         }
     },
     getters:{

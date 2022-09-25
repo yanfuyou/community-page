@@ -8,7 +8,7 @@
         </el-form-item>
         <el-form-item label="毕业时间">
             <el-col :span="11">
-                <el-date-picker v-model="eduInfo.graTime" type="date" placeholder="选择日期">
+                <el-date-picker value-format="yyyy年MM月dd日" format="yyyy年MM月dd日"  v-model="eduInfo.graTime" type="date" placeholder="选择日期">
                 </el-date-picker>
             </el-col>
         </el-form-item>
@@ -26,23 +26,30 @@ export default {
     data() {
         return {
             eduInfo: {
-                usreId: '',
-                schName:'',
-                major:'',
-                graTime:'',
-                eduBak:''
+                id: '',
+                userId: '',
+                schName: '',
+                major: '',
+                graTime: '',
+                eduBak: ''
             }
         }
     },
     methods: {
         onSubmit() {
-            console.log('submit!');
+            this.eduInfo.userId = this.$store.state.user.user.id;
+            this.$http.post('user/saveEdu', this.eduInfo).then(res => {
+                this.$notify.success({
+                    message: res.data.msg,
+                    offset: 70
+                })
+            })
         }
     }
 }
 </script>
 <style scoped>
-.baseUser{
+.baseUser {
     width: 500px;
     margin-left: 100px;
 }
