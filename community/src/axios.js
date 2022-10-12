@@ -2,6 +2,7 @@
 import axios from "axios"
 import store from '@/store'
 import router from '@/router'
+import { Message } from "element-ui";
 // 以插件的形式导入axios
 export default {
     install: function (vue) {
@@ -37,12 +38,12 @@ export default {
                     }, '1000');
                 }
                 if(status === 500){
-                    this.$notify.error({
-                        message: res.data.msg,
-                        offset: 70
-                    })
+                    Message.error(res.data.msg)
+                    // this.$notify.error({
+                    //     message: res.data.msg,
+                    //     offset: 70
+                    // })
                 }
-                console.log(res);
                 return res;
             },
             (error) => {

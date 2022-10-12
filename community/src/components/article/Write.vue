@@ -6,26 +6,28 @@
                 </el-input>
             </el-col>
             <el-col :span="8">
-                <el-select v-model="value1" multiple placeholder="请选择标签" class="sel">
+                <el-select v-model="labels" multiple placeholder="请选择标签" class="sel">
                     <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
                     </el-option>
                 </el-select>
             </el-col>
-            <el-col :span="3">
-                <el-upload class="upload-demo" :show-file-list="false" action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-change="handleChange" :file-list="fileList">
+            <el-col :span="6">
+                <el-upload class="upload-demo" action="upload" :show-file-list="false" :http-request="handleUploadFile"
+                    ref="upload" :auto-upload="false" :file-list="fileList">
                     <el-button size="small" type="primary">附件</el-button>
                 </el-upload>
                 <!-- 需要做修改 -->
                 <span v-if="true" class="fileClass">上传的附件名<i class="el-icon-delete-solid"></i></span>
             </el-col>
-            <el-col :span="3">
-                <el-upload class="upload-demo" :show-file-list="false" action="https://jsonplaceholder.typicode.com/posts/"
-                    :on-change="handleChange" :file-list="fileList">
+            <!-- 取消封面上传 -->
+            <!-- <el-col :span="3">
+                <el-upload class="upload-demo" :show-file-list="false"
+                    action="https://jsonplaceholder.typicode.com/posts/" :on-change="handleChange"
+                    :file-list="fileList">
                     <el-button size="small" type="primary">封面</el-button>
                 </el-upload>
                 <span v-if="true" class="fileClass">上传的封面名<i class="el-icon-delete-solid"></i></span>
-            </el-col>
+            </el-col> -->
             <el-col :span="4">
                 <el-button round @click="out">存草稿</el-button>
                 <el-button round @click="release">发布</el-button>
@@ -43,11 +45,11 @@
 </template>
 
 <script>
-import {nano, nanoid} from 'nanoid'
+import { nano, nanoid } from 'nanoid'
 export default {
     data() {
         return {
-            id:'',
+            id: '',
             value: '# 文本',
             title: '',
             options: [{
@@ -66,7 +68,7 @@ export default {
                 value: '选项5',
                 label: '北京烤鸭'
             }],
-            value1: [],
+            labels: [],
             fileList: [{
                 name: 'food.jpeg',
                 url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
@@ -124,17 +126,60 @@ export default {
                 alert("系统异常");
             })
         },
-        handleChange(file, fileList) {
-            this.fileList = fileList.slice(-3);
+        submitUpload() {
+            this.$refs.upload.submit();
         },
-        release(){
+        handleUploadFile(params) {
+            console.log(params);
+            const _file = params.file;
+            const isLt2M = _file.size / 1024 / 1024 < 2;
+
+            let param = new FormData();
+            param.append('files', _file)
+            console.log(param.get('files'));
+            // if (!isLt2M) {
+            //     that.$message.error('请上传2M以下的图片文件(*.png/*.jpg/*.jpeg)')
+            //     return false
+            // }
+
+            this.$http.post('file/upFile', param,{headers: {'content-type': 'multipart/form-data'}}, r => {
+                // code
+                console.log(r)
+            })
+        },
+        release() {
+            this.submitUpload();
+            if (this.title == null || this.title == "") {
+                this.$notify.warning({
+                    message: "请输入主题",
+                    offset: 70
+                })
+                return false;
+            }
+            // 组装标签
+            if (this.labels.length == 0) {
+                this.$notify.warning({
+                    message: "请选择标签",
+                    offset: 70
+                })
+                return false;
+            }
+            let aLabels = '';
+            this.labels.forEach(lab => {
+                aLabels += "," + lab;
+            })
+
             let articleInfo = {
                 id: nanoid(30),
                 articleName: this.title,
-                articleContent: this.value
+                articleContent: this.value,
+                articleLabels: aLabels
             }
-            this.$http.post('/article/release',articleInfo).then(res => {
-                console.log(res);
+            this.$http.post('/article/release', articleInfo).then(res => {
+                this.$notify.success({
+                    message: res.data.msg,
+                    offset: 70
+                })
             }).catch(error => {
 
             })
@@ -149,20 +194,25 @@ export default {
     .el-select__tags {
         width: 170% !important;
     }
+
     .upload-demo {
         display: inline;
     }
+
     .el-upload {
         display: inline;
     }
-    .fileClass{
+
+    .fileClass {
         margin-left: 10px;
     }
-    i{
+
+    i {
         margin-left: 5px;
     }
 }
-#write{
+
+#write {
     margin: 20px 40px auto 40px;
 }
 </style>
