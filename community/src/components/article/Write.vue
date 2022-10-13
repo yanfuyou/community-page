@@ -13,11 +13,11 @@
             </el-col>
             <el-col :span="6">
                 <el-upload class="upload-demo" action="upload" :show-file-list="false" :http-request="handleUploadFile"
-                    ref="upload" :auto-upload="false" :file-list="fileList">
+                    ref="upload" :auto-upload="false" :on-change="handleChange">
                     <el-button size="small" type="primary">附件</el-button>
                 </el-upload>
                 <!-- 需要做修改 -->
-                <span v-if="true" class="fileClass">上传的附件名<i class="el-icon-delete-solid"></i></span>
+                <span v-if="true" class="fileClass">{{encl.fileName}}</span>
             </el-col>
             <!-- 取消封面上传 -->
             <!-- <el-col :span="3">
@@ -45,13 +45,18 @@
 </template>
 
 <script>
-import { nano, nanoid } from 'nanoid'
+import { nanoid } from 'nanoid'
 export default {
     data() {
         return {
             id: '',
             value: '# 文本',
             title: '',
+            encl: {
+                id: '',
+                fileName: '',
+                visitPath: ''
+            },
             options: [{
                 value: '选项1',
                 label: '黄金糕'
@@ -69,10 +74,6 @@ export default {
                 label: '北京烤鸭'
             }],
             labels: [],
-            fileList: [{
-                name: 'food.jpeg',
-                url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-            }],
             toolbars: {
                 bold: true, // 粗体
                 italic: true, // 斜体
@@ -110,8 +111,11 @@ export default {
             }
         }
     },
+    computed: {
+    },
     methods: {
         out() {
+            console.log(this.fileList)
             console.log(this.value);
         },
         $imgAdd(pos, $file) {
@@ -119,7 +123,6 @@ export default {
             const imageData = new FormData();
             imageData.append("img", $file);
             this.$http.post('/file/upload', imageData).then(res => {
-                console.log(res);
                 this.$refs.md.$img2Url(pos, res.data.records.visitPath);
             }).catch(error => {
                 console.log(error);
@@ -130,25 +133,31 @@ export default {
             this.$refs.upload.submit();
         },
         handleUploadFile(params) {
-            console.log(params);
             const _file = params.file;
             const isLt2M = _file.size / 1024 / 1024 < 2;
 
-            let param = new FormData();
-            param.append('files', _file)
-            console.log(param.get('files'));
-            // if (!isLt2M) {
-            //     that.$message.error('请上传2M以下的图片文件(*.png/*.jpg/*.jpeg)')
-            //     return false
-            // }
+            if (_file) {
+                let param = new FormData();
+                param.append('files', _file);
+                param.append('bizType', "enclosure");
+                param.append('articleId', this.id);
+                console.log(param.get('articleId'));
+                if (!isLt2M) {
+                    that.$message.error('请上传2M以下的图片文件(*.png/*.jpg/*.jpeg)')
+                    return false
+                }
 
-            this.$http.post('file/upFile', param,{headers: {'content-type': 'multipart/form-data'}}, r => {
-                // code
-                console.log(r)
-            })
+                this.$http.post('file/upFile', param, { headers: { 'content-type': 'multipart/form-data' } }).then(res => {
+                    this.$message.success(res.data.msg)
+                })
+            }
+        },
+        handleChange(file, fileList) {
+            fileList.length = 0;
+            fileList.push(file);
+            this.encl.fileName = fileList[0].name;
         },
         release() {
-            this.submitUpload();
             if (this.title == null || this.title == "") {
                 this.$notify.warning({
                     message: "请输入主题",
@@ -168,13 +177,15 @@ export default {
             this.labels.forEach(lab => {
                 aLabels += "," + lab;
             })
-
+            this.id = nanoid(30);
             let articleInfo = {
-                id: nanoid(30),
+                id: this.id,
                 articleName: this.title,
                 articleContent: this.value,
-                articleLabels: aLabels
+                articleLabels: aLabels,
+                enclosure: this.encl.fileName == '' ? '0' : '1'
             }
+            this.submitUpload();
             this.$http.post('/article/release', articleInfo).then(res => {
                 this.$notify.success({
                     message: res.data.msg,

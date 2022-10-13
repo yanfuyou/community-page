@@ -37,12 +37,15 @@ export default {
                         router.push('/user/login');
                     }, '1000');
                 }
-                if(status === 500){
+                if(status === 5000){
                     Message.error(res.data.msg)
                     // this.$notify.error({
                     //     message: res.data.msg,
                     //     offset: 70
                     // })
+                }
+                if(status === 6000){
+                    Message.waring(res.data.msg)
                 }
                 return res;
             },
