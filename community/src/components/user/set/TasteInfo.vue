@@ -5,8 +5,8 @@
                 <el-divider>
                     <el-button round class="my-tag">我的标签</el-button>
                 </el-divider>
-                <el-tag v-for="(tag, index) in myTags" :key="index" closable :type="tag.type" @close="removeMyTag(tag)">
-                    {{tag.name}}
+                <el-tag v-for="(tag, index) in myTags" :key="index" closable :type="tag.labelType" @close="removeMyTag(tag)">
+                    {{tag.labelName}}
                 </el-tag>
             </el-col>
         </el-row>
@@ -15,9 +15,9 @@
                 <el-divider>
                     <el-button round>系统标签</el-button>
                 </el-divider>
-                <el-tag v-for="(tag, index) in systemTags | getDiff" :key="index" :disable-transitions="false" :type="tag.type"
+                <el-tag v-for="(tag, index) in systemTags" :key="index" :disable-transitions="false" :type="tag.labelType"
                     @click="addMyTags(tag)">
-                    {{tag.name}}
+                    {{tag.labelName}}
                 </el-tag>
                 <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
                     @keyup.enter.native="handleInputConfirm" @blur="handleInputConfirm">
@@ -96,25 +96,8 @@
 export default {
     data() {
         return {
-            myTags: [
-                // { name: '标签一', type: '' },
-                // { name: '标签二', type: 'success' },
-                // { name: '标签三', type: 'info' },
-                // { name: '标签四', type: 'warning' },
-                // { name: '标签五', type: 'danger' }
-            ],
-            systemTags: [
-                { name: '测试的', type: '' },
-                { name: '到底', type: 'success' },
-                { name: '懂三', type: 'info' },
-                { name: '签的四', type: 'warning' },
-                { name: '咚咚咚五', type: 'danger' },
-                { name: '标签一', type: '' },
-                { name: '标签二', type: 'success' },
-                { name: '标签三', type: 'info' },
-                { name: '标签四', type: 'warning' },
-                { name: '标签五', type: 'danger' }
-            ],
+            myTags: [],
+            systemTags: [],
             inputVisible: false,
             inputValue: ''
         };
@@ -141,12 +124,15 @@ export default {
             let tagType = ['', 'success', 'info', 'warning', 'danger'];
             let index = Math.round(Math.random() * 4);
             let inputValue = this.inputValue;
-            let tag = {
-                name: this.inputValue,
-                type: tagType[index]
+            let labelInfo = {
+                labelName: this.inputValue,
+                labelType: tagType[index]
             }
             if (inputValue) {
-                this.systemTags.push(tag);
+                this.systemTags.push(labelInfo);
+                this.$http.post('/sys/label/save',labelInfo).then(res => {
+                    this.$message.success(res.data.msg);
+                })
             }
             this.inputVisible = false;
             this.inputValue = '';
@@ -163,6 +149,16 @@ export default {
             })
             return value;
         }
+    },
+    mounted(){
+        let dto = {
+            flag: '0'
+        }
+        this.$http.post('/sys/label/getSysLabels',dto).then(res => {
+            if(res.data.code == 2000){
+                this.systemTags = res.data.records;
+            }
+        })
     }
 }
 </script>
