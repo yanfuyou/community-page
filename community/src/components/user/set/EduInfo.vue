@@ -8,7 +8,8 @@
         </el-form-item>
         <el-form-item label="毕业时间">
             <el-col :span="11">
-                <el-date-picker value-format="yyyy年MM月dd日" format="yyyy年MM月dd日"  v-model="eduInfo.graTime" type="date" placeholder="选择日期">
+                <el-date-picker value-format="yyyy年MM月dd日" format="yyyy年MM月dd日" v-model="eduInfo.graTime" type="date"
+                    placeholder="选择日期">
                 </el-date-picker>
             </el-col>
         </el-form-item>
@@ -22,6 +23,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -35,17 +37,26 @@ export default {
             }
         }
     },
+    computed: {
+        ...mapGetters('user', ['getUser']),
+    },
     methods: {
         onSubmit() {
             this.eduInfo.userId = this.$store.state.user.user.id;
-            this.$http.post('user/saveEdu', this.eduInfo).then(res => {
-                this.$notify.success({
-                    message: res.data.msg,
-                    offset: 70
-                })
+            this.$http.post('/user/saveEdu', this.eduInfo);
+        },
+        setEdu() {
+            this.$http.get('/user/edu/' + this.getUser.id).then(res => {
+                if (res.data.code === 2000 && res.data.records.id) {
+                    this.eduInfo = res.data.records;
+                }
             })
         }
+    },
+    mounted(){
+        this.setEdu();
     }
+
 }
 </script>
 <style scoped>
