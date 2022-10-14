@@ -5,7 +5,8 @@
                 <el-divider>
                     <el-button round class="my-tag">我的标签</el-button>
                 </el-divider>
-                <el-tag v-for="(tag, index) in myTags" :key="index" closable :type="tag.labelType" @close="removeMyTag(tag)">
+                <el-tag v-for="(tag, index) in myTags" :key="index" closable :type="tag.labelType"
+                    @close="removeMyTag(tag)">
                     {{tag.labelName}}
                 </el-tag>
             </el-col>
@@ -15,8 +16,8 @@
                 <el-divider>
                     <el-button round>系统标签</el-button>
                 </el-divider>
-                <el-tag v-for="(tag, index) in systemTags" :key="index" :disable-transitions="false" :type="tag.labelType"
-                    @click="addMyTags(tag)">
+                <el-tag v-for="(tag, index) in systemTags" :key="index" :disable-transitions="false"
+                    :type="tag.labelType" @click="addMyTags(tag)">
                     {{tag.labelName}}
                 </el-tag>
                 <el-input class="input-new-tag" v-if="inputVisible" v-model="inputValue" ref="saveTagInput" size="small"
@@ -92,7 +93,7 @@
 </style>
 
 <script>
-
+import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
@@ -102,14 +103,24 @@ export default {
             inputValue: ''
         };
     },
+    computed: {
+        ...mapGetters('user', ['getUser'])
+    },
     methods: {
         removeMyTag(tag) {
             this.systemTags.push(tag);
             this.myTags.splice(this.myTags.indexOf(tag), 1);
+            let dto = {
+                userId: this.getUser.id,
+                labelId: tag.id
+            }
+            this.$http.post('/user/delLabel/', dto)
         },
         addMyTags(tag) {
             this.systemTags.splice(this.systemTags.indexOf(tag), 1);
             this.myTags.push(tag);
+            let labelUrl = '/user/saveLabel/' + this.getUser.id + '/' + tag.id;
+            this.$http.get(labelUrl)
         },
         // handleClose(tag) {
         //     this.systemTags.splice(this.systemTags.indexOf(tag), 1);
@@ -130,35 +141,44 @@ export default {
             }
             if (inputValue) {
                 this.systemTags.push(labelInfo);
-                this.$http.post('/sys/label/save',labelInfo).then(res => {
+                this.$http.post('/sys/label/save', labelInfo).then(res => {
                     this.$message.success(res.data.msg);
+                    this.setSysTags();
                 })
             }
             this.inputVisible = false;
             this.inputValue = '';
-        }
-    },
-    filters:{
-        getDiff(value){
-            this.myTags.forEach(item => {
-                value.forEach(tag => {
-                    if(item.name == tag.name){
-                        value.splice(value.indexOf(tag),1);
-                    }
-                })
-            })
-            return value;
-        }
-    },
-    mounted(){
-        let dto = {
-            flag: '0'
-        }
-        this.$http.post('/sys/label/getSysLabels',dto).then(res => {
-            if(res.data.code == 2000){
-                this.systemTags = res.data.records;
+        },
+        setSysTags() {
+            this.setMyTags();
+            let dto = {
+                flag: '0'
             }
-        })
+            this.$http.post('/sys/label/getSysLabels', dto).then(res => {
+                if (res.data.code == 2000) {
+                    let records = res.data.records;
+                    this.myTags.forEach(m => {
+                        records.forEach(s => {
+                            if(m.id == s.id){
+                                records.splice(this.systemTags.indexOf(tag), 1);
+                            }
+                        });
+                    })
+                    this.systemTags = records;
+                }
+            })
+        },
+        setMyTags() {
+            let userId = this.getUser.id;
+            this.$http.get('/user/getUserLabels/' + userId).then(res => {
+                if (res.data.code == 2000) {
+                    this.myTags = res.data.records;
+                }
+            })
+        }
+    },
+    mounted() {
+        this.setSysTags();
     }
 }
 </script>

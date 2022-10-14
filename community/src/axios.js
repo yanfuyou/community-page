@@ -44,6 +44,9 @@ export default {
                     //     offset: 70
                     // })
                 }
+                if(status === 2000){
+                    Message.success(res.data.msg)
+                }
                 if(status === 6000){
                     Message.waring(res.data.msg)
                 }
