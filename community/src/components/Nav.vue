@@ -34,7 +34,7 @@
           <div>
             <el-dropdown>
               <span class="el-dropdown-link">
-                <el-avatar :src="avatar.src"></el-avatar>
+                <el-avatar :src="getUser.userAvatar"></el-avatar>
               </span>
               <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
               <el-dropdown-menu slot="dropdown">

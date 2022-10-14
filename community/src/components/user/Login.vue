@@ -64,6 +64,7 @@ export default {
                         id: res.data.records.userId,
                         userName: res.data.records.userName,
                         userAlias: res.data.records.userAlias,
+                        userAvatar: res.data.records.userAvatar,
                         loginFlag: true
                     }
                     window.localStorage.setItem("Bearer",res.data.records.tokenId);

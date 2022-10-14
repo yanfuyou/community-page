@@ -11,7 +11,8 @@
         </el-form-item>
         <el-form-item label="入职时间">
             <el-col :span="11">
-                <el-date-picker v-model="workInfo.inTime" type="date" placeholder="选择日期">
+                <el-date-picker v-model="workInfo.inTime" type="date" placeholder="选择日期" value-format="yyyy年MM月dd日"
+                    format="yyyy年MM月dd日">
                 </el-date-picker>
             </el-col>
         </el-form-item>
@@ -26,23 +27,35 @@ export default {
     data() {
         return {
             workInfo: {
+                id: '',
                 usreId: '',
-                comName:'',
-                posName:'',
-                address:'',
-                inTime:''
+                comName: '',
+                posName: '',
+                address: '',
+                inTime: ''
             }
         }
     },
     methods: {
         onSubmit() {
-            console.log('submit!');
+            this.workInfo.userId = this.$store.state.user.user.id;
+            this.$http.post('/user/saveWork', this.workInfo);
+        },
+        setWork() {
+            this.$http.get('/user/work/' + this.$store.state.user.user.id).then(res => {
+                if (res.data.code === 2000 && res.data.records.id) {
+                    this.workInfo = res.data.records;
+                }
+            })
         }
+    },
+    mounted(){
+        this.setWork();
     }
 }
 </script>
 <style scoped>
-.baseUser{
+.baseUser {
     width: 500px;
     margin-left: 100px;
 }

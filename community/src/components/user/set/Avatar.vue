@@ -2,31 +2,12 @@
     <div class="avatar">
         <el-row>
             <el-col :span="3">
-                <!-- <div class="block avatar">
-                    <el-avatar :size="100" :src="circleUrl"></el-avatar>
-                </div> -->
-                <div class="avatar-upload">
-                    <el-upload action="#" list-type="picture-card" :auto-upload="true" :show-file-list="false">
-                        <i slot="default" class="el-icon-upload2"></i>
-                        <div slot="file" slot-scope="{file}">
-                            <img class="el-upload-list__item-thumbnail" :src="file.url" alt="">
-                            <span class="el-upload-list__item-actions">
-                                <span class="el-upload-list__item-preview" @click="handlePictureCardPreview(file)">
-                                    <i class="el-icon-zoom-in"></i>
-                                </span>
-                                <span v-if="!disabled" class="el-upload-list__item-delete"
-                                    @click="handleDownload(file)">
-                                    <i class="el-icon-download"></i>
-                                </span>
-                                <span v-if="!disabled" class="el-upload-list__item-delete" @click="handleRemove(file)">
-                                    <i class="el-icon-delete"></i>
-                                </span>
-                            </span>
-                        </div>
-                    </el-upload>
+                <div class="block avatar">
+                    <el-avatar :size="100" :src="avatarUrl"></el-avatar>
+
                 </div>
             </el-col>
-            <el-col :span="21">
+            <el-col :span="11">
                 <el-row id="user-main">
                     <el-col :span="24">
                         <div id="name">
@@ -49,30 +30,44 @@
                     </el-col>
                 </el-row>
             </el-col>
+            <el-col :span="10">
+                <el-upload class="upload-demo" drag action="" multiple :show-file-list="false"
+                    :http-request="uploadAvatar">
+                    <i class="el-icon-upload"></i>
+                    <div class="el-upload__text">换个头像吧</div>
+                    <!-- <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div> -->
+                </el-upload>
+            </el-col>
         </el-row>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
-            circleUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
-            dialogImageUrl: '',
-            dialogVisible: false,
-            disabled: false
+            // avatarUrl: "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",
+            upFlag: false
+        }
+    },
+    computed: {
+        ...mapGetters('user', ['getUser']),
+        avatarUrl() {
+            return this.getUser.userAvatar ? this.getUser.userAvatar : "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png";
         }
     },
     methods: {
-        handleRemove(file) {
-            console.log(file);
-        },
-        handlePictureCardPreview(file) {
-            this.dialogImageUrl = file.url;
-            this.dialogVisible = true;
-        },
-        handleDownload(file) {
-            console.log(file);
+        uploadAvatar(avatarFile) {
+            let fileA = new FormData();
+            fileA.append('files', avatarFile.file);
+            fileA.append('bizType', 'avatar')
+            this.$http.post('/file/upFile', fileA).then(res => {
+                if (res.data.code === 2000) {
+                    // location.reload();
+                    // this.$router.go(0)
+                }
+            })
         }
     }
 }
@@ -91,17 +86,7 @@ export default {
     margin-left: 40px;
 }
 
-.el-upload--picture-card {
-    /* width: 200px;
-    height: 200px; */
-    border: 0;
-}
-
-.avatar-upload {
-    width: 50%;
-    height: auto;
-    background-image: url('https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png');
-    text-align: center;
-    background-position: center;
+.upload-demo {
+    height: 100px;
 }
 </style>
