@@ -4,7 +4,7 @@
             <el-row id="head">
                 <el-col :span="4">
                     <div class="block avatar">
-                        <el-avatar :size="100" :src="circleUrl"></el-avatar>
+                        <el-avatar :size="100" :src="getUser.userAvatar"></el-avatar>
                     </div>
                 </el-col>
                 <el-col :span="20">
@@ -77,6 +77,7 @@
 <script>
 import MyArticle from './MyArticle.vue'
 import Deg from './Deg.vue'
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -92,6 +93,7 @@ export default {
         Deg
     },
     computed: {
+        ...mapGetters('user',['getUser']),
         user() {
             let user = {
                 id: '001',

@@ -7,7 +7,7 @@
             </el-col>
             <el-col :span="8">
                 <el-select v-model="labels" multiple placeholder="请选择标签" class="sel">
-                    <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                    <el-option v-for="item in sysLabels" :key="item.id" :label="item.labelName" :value="item.id">
                     </el-option>
                 </el-select>
             </el-col>
@@ -57,22 +57,7 @@ export default {
                 fileName: '',
                 visitPath: ''
             },
-            options: [{
-                value: '选项1',
-                label: '黄金糕'
-            }, {
-                value: '选项2',
-                label: '双皮奶'
-            }, {
-                value: '选项3',
-                label: '蚵仔煎'
-            }, {
-                value: '选项4',
-                label: '龙须面'
-            }, {
-                value: '选项5',
-                label: '北京烤鸭'
-            }],
+            sysLabels: [],
             labels: [],
             toolbars: {
                 bold: true, // 粗体
@@ -111,7 +96,15 @@ export default {
             }
         }
     },
-    computed: {
+    watch:{
+        labels(newVal,oldVal){
+            console.log(newVal.length);
+            if(newVal.length == 5){
+                this.$alert('不能超过五个哦',{
+                    confirmButtonText: '确定'
+                })
+            }
+        }
     },
     methods: {
         out() {
@@ -195,6 +188,25 @@ export default {
 
             })
         }
+    },
+    mounted() {
+        let labels = [];
+        let dto = {
+            flag: '0'
+        }
+        this.$http.post('/sys/label/getSysLabels', dto).then(res => {
+            if (res.data.code == 2000) {
+                let records = res.data.records;
+                records.forEach(label => {
+                    let la = {
+                        id: label.id,
+                        labelName: label.labelName
+                    }
+                    labels.push(la);
+                })
+            }
+        })
+        this.sysLabels = labels;
     }
 }
 </script>
@@ -225,5 +237,8 @@ export default {
 
 #write {
     margin: 20px 40px auto 40px;
+}
+.el-message-box{
+    z-index: 9999 !important;
 }
 </style>
