@@ -64,9 +64,20 @@ export default {
             fileA.append('bizType', 'avatar')
             this.$http.post('/file/upFile', fileA).then(res => {
                 if (res.data.code === 2000) {
-                    // location.reload();
-                    // this.$router.go(0)
+                    this.updateAvatar();
                 }
+            })
+        },
+        updateAvatar(){
+            let avatarDto = {
+                current: 1,
+                size: 1,
+                params: [this.getUser.id]
+            }
+            this.$http.post('/user/getAvatars',avatarDto).then(res => {
+                let user = this.getUser;
+                user.userAvatar = res.data.records[0].userAvatar;
+                this.$store.commit('user/setUser',user);
             })
         }
     }
