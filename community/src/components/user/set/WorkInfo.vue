@@ -43,7 +43,7 @@ export default {
         },
         setWork() {
             this.$http.get('/user/work/' + this.$store.state.user.user.id).then(res => {
-                if (res.data.code === 2000 && res.data.records.id) {
+                if (res.data.code === 2000 && res.data.records) {
                     this.workInfo = res.data.records;
                 }
             })

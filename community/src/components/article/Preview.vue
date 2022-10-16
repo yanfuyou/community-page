@@ -2,7 +2,7 @@
     <div id="out">
         <el-container id="one-con">
             <el-aside style="background-color:aliceblue" width="400px">
-                <UserDetail></UserDetail>
+                <UserDetail :userId="userId" :articleId="articleId"></UserDetail>
             </el-aside>
             <el-container>
                 <el-main>
@@ -12,11 +12,6 @@
                             </el-input>
                         </el-col>
                         <el-col :span="8">
-                            <!-- <el-select v-model="value1" multiple placeholder="请选择标签">
-                                <el-option v-for="item in options" :key="item.value" :label="item.label"
-                                    :value="item.value">
-                                </el-option>
-                            </el-select> -->
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{tag.labelName}}</el-tag>
                         </el-col>
                         <el-col :span="10">
@@ -77,6 +72,8 @@ export default {
             encl: {
                 downPath:''
             },
+            userId:'',
+            articleId: '',
             // 写评论标识
             dialogVisible: false,
             // 输入的评论信息
@@ -140,6 +137,8 @@ export default {
                 if (res.data.code === 2000) {
                     this.title = res.data.records.articleName;
                     this.value = res.data.records.articleContent;
+                    this.userId = res.data.records.userId;
+                    this.articleId = res.data.records.id;
                     // 标签id
                     let labelIds = res.data.records.articleLabels.split(',');
                     labelIds.splice(0, 1);

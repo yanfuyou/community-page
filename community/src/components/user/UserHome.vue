@@ -4,15 +4,15 @@
             <el-row id="head">
                 <el-col :span="4">
                     <div class="block avatar">
-                        <el-avatar :size="100" :src="getUser.userAvatar"></el-avatar>
+                        <el-avatar :size="100" :src="user.baseInfo.userAvatar"></el-avatar>
                     </div>
                 </el-col>
                 <el-col :span="20">
                     <el-row id="user-main">
                         <el-col :span="24">
                             <div id="name">
-                                <span>鄢富友</span>
-                                <i class="el-icon-time">一年</i>
+                                <span>{{user.baseInfo.userAlias}}</span>
+                                <i class="el-icon-time">{{getTime}}</i>
                                 <i style="float:right;margin-right:80px;" class="el-icon-setting" title="设置"
                                     @click="dump('/user/setting')">设置</i>
                             </div>
@@ -29,7 +29,7 @@
                             </el-breadcrumb>
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
-                                    class="el-icon-microphone"></i><span>签名</span>
+                                    class="el-icon-microphone"></i><span>{{user.baseInfo.userSign}}</span>
                             </div>
                         </el-col>
                     </el-row>
@@ -85,6 +85,9 @@ export default {
             userComment: {
                 total: '60',
 
+            },
+            user: {
+                baseInfo: {}
             }
         }
     },
@@ -94,14 +97,12 @@ export default {
     },
     computed: {
         ...mapGetters('user',['getUser']),
-        user() {
-            let user = {
-                id: '001',
-                name: '鄢富友',
-                totalFra: '1000',
-                monthFra: '200'
-            }
-            return user;
+        getTime(){
+            let create = this.user.baseInfo.createTime + '';
+            let year = create.substring(0,4);
+            let month = create.substring(4,6);
+            let day = create.substring(6,8);
+            return year + '/' + month + '/' + day;
         },
         degArticles() {
             let articles = [
@@ -140,7 +141,17 @@ export default {
     methods: {
         dump(path) {
             this.$router.push(path);
+        },
+        setBasic(){
+            this.$http.get('/user/' + this.$route.query.id).then(res => {
+                if(res.data.code === 2000){
+                    this.user.baseInfo = res.data.records;
+                }
+            })
         }
+    },
+    mounted(){
+        this.setBasic();
     }
 }
 </script>

@@ -1,10 +1,13 @@
 <template>
     <el-form ref="form" :model="user" label-width="80px" class="baseUser">
+        <el-form-item label="用户名">
+            <el-input v-model="user.userName" readonly="" class="username"></el-input>
+        </el-form-item>
         <el-form-item label="用户昵称">
             <el-input v-model="user.userAlias"></el-input>
         </el-form-item>
-        <el-form-item label="用户名">
-            <el-input v-model="user.userName" readonly="" class="username"></el-input>
+        <el-form-item label="邮箱">
+            <el-input v-model="user.userEmail" class="username"></el-input>
         </el-form-item>
         <!-- <el-form-item label="用户ID">
             <el-input v-model="user.id"></el-input>
@@ -39,6 +42,7 @@ export default {
                 id: '',
                 userName: '',
                 userAlias: '',
+                userEmail: '',
                 birthday: '',
                 userSex: '',
                 userSign: ''

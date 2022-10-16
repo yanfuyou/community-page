@@ -77,7 +77,7 @@ export default {
                     message: "系统异常"
                 })
             })
-            this.setCode();
+            // this.setCode();
         },
         resetForm(user) {
             this.$refs[user].resetFields();

@@ -47,7 +47,7 @@ export default {
         },
         setEdu() {
             this.$http.get('/user/edu/' + this.getUser.id).then(res => {
-                if (res.data.code === 2000 && res.data.records.id) {
+                if (res.data.code === 2000 && res.data.records) {
                     this.eduInfo = res.data.records;
                 }
             })
