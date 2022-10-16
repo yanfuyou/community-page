@@ -8,18 +8,19 @@
                 <el-main>
                     <el-row :gutter="10">
                         <el-col :span="6">
-                            <el-input type="text" placeholder="请输入主题" v-model="title" maxlength="20" show-word-limit>
+                            <el-input type="text" readonly="" v-model="title" show-word-limit>
                             </el-input>
                         </el-col>
                         <el-col :span="8">
-                            <el-select v-model="value1" multiple placeholder="请选择标签">
+                            <!-- <el-select v-model="value1" multiple placeholder="请选择标签">
                                 <el-option v-for="item in options" :key="item.value" :label="item.label"
                                     :value="item.value">
                                 </el-option>
-                            </el-select>
+                            </el-select> -->
+                            <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{tag.labelName}}</el-tag>
                         </el-col>
                         <el-col :span="10">
-                            <span v-if="true" class="fileClass">下载附件<i class="el-icon-delete-solid"></i></span>
+                            <span v-if="encl.downPath != ''" class="fileClass" @click="downFile" ><el-tag type="info" effect="dark">附件</el-tag>{{encl.fileName}}<i class="el-icon-download"></i></span>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -70,10 +71,12 @@ import UserDetail from '../user/UserDetail.vue'
 export default {
     data() {
         return {
-            value: '::: hljs-center\n\n# 文本\n\n:::\n',
+            value: '',
             title: '',
-            value1: '',
-            options: [],
+            tags: [],
+            encl: {
+                downPath:''
+            },
             // 写评论标识
             dialogVisible: false,
             // 输入的评论信息
@@ -131,7 +134,43 @@ export default {
     methods: {
         writeComment() {
             this.dialogVisible = true;
+        },
+        getDetail(id) {
+            this.$http.get('/article/getArticleInfo/' + id).then(res => {
+                if (res.data.code === 2000) {
+                    this.title = res.data.records.articleName;
+                    this.value = res.data.records.articleContent;
+                    // 标签id
+                    let labelIds = res.data.records.articleLabels.split(',');
+                    labelIds.splice(0, 1);
+                    let dto = {
+                        flag: '0',
+                        ids: labelIds
+                    }
+                    this.$http.post('/sys/label/getSysLabels', dto).then(res => {
+                        if (res.data.code === 2000) {
+                            this.tags = res.data.records;
+                        }
+                    })
+                    // 附件
+                    if (res.data.records.enclosure === '1') {
+                        this.$http.get('/article/enclInfo/' + res.data.records.id).then(res => {
+                            if(res.data.code === 2000){
+                                this.encl = res.data.records;
+                            }
+                        })
+                    }
+                }
+            })
+        },
+        downFile(){
+            this.$down.myDownLoad(this.encl.downPath,this.encl.fileName);
         }
+    },
+    mounted() {
+        let id = this.$route.query.id;
+        this.getDetail(id);
+
     }
 }
 </script>

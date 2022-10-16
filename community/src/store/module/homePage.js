@@ -2,14 +2,14 @@ const homePage = {
     namespaced: true,
     state: {
         hots: [
-            {
-                title: '标题1',
-                describe: '描述信息1'
-            },
-            {
-                title: '标题2',
-                describe: '描述信息2'
-            }
+            // {
+            //     title: '标题1',
+            //     describe: '描述信息1'
+            // },
+            // {
+            //     title: '标题2',
+            //     describe: '描述信息2'
+            // }
         ],
         headLines:[
             {
@@ -43,7 +43,9 @@ const homePage = {
         }
     },
     mutations: {
-
+        setHots(state,hots){
+            state.hots = hots;
+        }
     },
     actions: {
 

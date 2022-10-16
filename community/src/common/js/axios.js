@@ -26,6 +26,8 @@ export default {
             (res) => {
                 const status = Number(res.data.code) || 200;
                 if (status === 401) {
+                    console.log('登录过期');
+                    Message.error(res.data.msg)
                     setTimeout(() => {
                         let user = {
                             id: '',

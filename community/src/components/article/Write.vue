@@ -59,6 +59,7 @@ export default {
             },
             sysLabels: [],
             labels: [],
+            cover: '',
             toolbars: {
                 bold: true, // 粗体
                 italic: true, // 斜体
@@ -96,11 +97,11 @@ export default {
             }
         }
     },
-    watch:{
-        labels(newVal,oldVal){
+    watch: {
+        labels(newVal, oldVal) {
             console.log(newVal.length);
-            if(newVal.length == 5){
-                this.$alert('不能超过五个哦',{
+            if (newVal.length == 5) {
+                this.$alert('不能超过五个哦', {
                     confirmButtonText: '确定'
                 })
             }
@@ -117,9 +118,7 @@ export default {
             imageData.append("img", $file);
             this.$http.post('/file/upload', imageData).then(res => {
                 this.$refs.md.$img2Url(pos, res.data.records.visitPath);
-            }).catch(error => {
-                console.log(error);
-                alert("系统异常");
+                this.cover = res.data.records.visitPath;
             })
         },
         submitUpload() {
@@ -179,14 +178,14 @@ export default {
                 enclosure: this.encl.fileName == '' ? '0' : '1'
             }
             this.submitUpload();
-            this.$http.post('/article/release', articleInfo).then(res => {
-                this.$notify.success({
-                    message: res.data.msg,
-                    offset: 70
-                })
-            }).catch(error => {
-
-            })
+            if (this.cover != '') {
+                let articleCover = {
+                    articleId: this.id,
+                    coverPath: this.cover
+                }
+                this.$http.post('/article/addCover', articleCover)
+            }
+            this.$http.post('/article/release', articleInfo);
         }
     },
     mounted() {
@@ -238,7 +237,8 @@ export default {
 #write {
     margin: 20px 40px auto 40px;
 }
-.el-message-box{
+
+.el-message-box {
     z-index: 9999 !important;
 }
 </style>

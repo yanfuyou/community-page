@@ -58,6 +58,7 @@ const routes = [
             },
             {
                 path: 'preview',
+                name: 'preview',
                 component: Preview,
                 meta: { title: '文章详情' }
             }

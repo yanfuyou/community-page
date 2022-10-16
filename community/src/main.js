@@ -9,10 +9,15 @@ import 'element-ui/lib/theme-chalk/index.css';
 import mavonEditor from 'mavon-editor'
 import 'mavon-editor/dist/css/index.css'
 // axios
-import axios from './axios'
+import axios from './common/js/axios'
+// 公共的下载函数
+import down from './common/js/down'
+
 Vue.use(ElementUI);
 Vue.use(axios);
 Vue.use(mavonEditor);
+
+Vue.prototype.$down=down;
 
 Vue.config.productionTip = false
 
