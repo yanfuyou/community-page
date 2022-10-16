@@ -21,11 +21,11 @@
                     <el-row>
                         <el-col :span="24">
                             <el-breadcrumb separator="|" style="color:#2b426e !important;">
-                                <el-breadcrumb-item>文章数</el-breadcrumb-item>
-                                <el-breadcrumb-item>资料数</el-breadcrumb-item>
-                                <el-breadcrumb-item>总访问量</el-breadcrumb-item>
-                                <el-breadcrumb-item>排名</el-breadcrumb-item>
-                                <el-breadcrumb-item>收藏数</el-breadcrumb-item>
+                                <el-breadcrumb-item>文章数：{{user.report.artSum}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>资料数：</el-breadcrumb-item>
+                                <el-breadcrumb-item>总访问量：{{user.report.readSum}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>排名：</el-breadcrumb-item>
+                                <el-breadcrumb-item>收藏数：{{user.report.followSum}}</el-breadcrumb-item>
                             </el-breadcrumb>
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
@@ -87,7 +87,8 @@ export default {
 
             },
             user: {
-                baseInfo: {}
+                baseInfo: {},
+                report:{}
             }
         }
     },
@@ -148,10 +149,18 @@ export default {
                     this.user.baseInfo = res.data.records;
                 }
             })
+        },
+        setReport(){
+            this.$http.get('/userArt/getReport/' + this.$route.query.id).then(res => {
+                if(res.data.code === 2000){
+                    this.user.report = res.data.records;
+                }
+            })
         }
     },
     mounted(){
         this.setBasic();
+        this.setReport();
     }
 }
 </script>

@@ -164,12 +164,15 @@ export default {
         },
         downFile(){
             this.$down.myDownLoad(this.encl.downPath,this.encl.fileName);
+        },
+        addRead(){
+            this.$http.post('')
         }
     },
     mounted() {
         let id = this.$route.query.id;
         this.getDetail(id);
-
+        
     }
 }
 </script>
