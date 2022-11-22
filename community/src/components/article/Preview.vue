@@ -12,10 +12,13 @@
                             </el-input>
                         </el-col>
                         <el-col :span="8">
-                            <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{tag.labelName}}</el-tag>
+                            <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
                         </el-col>
                         <el-col :span="10">
-                            <span v-if="encl.downPath != ''" class="fileClass" @click="downFile" ><el-tag type="info" effect="dark">附件</el-tag>{{encl.fileName}}<i class="el-icon-download"></i></span>
+                            <span v-if="encl.downPath != ''" class="fileClass" @click="downFile">
+                                <el-tag type="info" effect="dark">附件</el-tag>{{ encl.fileName }}<i
+                                    class="el-icon-download"></i>
+                            </span>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -27,31 +30,43 @@
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <el-empty description="暂无评论" v-if="this.comments.length==0"></el-empty>
-                            <el-card class="box-card" style="line-height:5px" v-else>
+                            <el-card class="box-card" style="line-height:5px">
                                 <div slot="header" class="clearfix">
-                                    <el-badge :value="this.comments.length" class="item">
+                                    <el-badge :value="''" class="item">
                                         <el-button size="small">评论</el-button>
                                     </el-badge>
-                                    <el-button style="float: right; padding: 0px" type="text" @click="writeComment"><i
-                                            class="el-icon-edit"></i>写评论
+                                    <el-button style="float: right; padding: 0px" type="text"
+                                        @click="showDialog('2', '0')"><i class="el-icon-edit"></i>写评论
                                     </el-button>
                                 </div>
-                                <div v-for="(comment,index) in comments" :key="index" class="text item">
-                                    <el-avatar :size="30"
-                                        :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
-                                    </el-avatar>
-                                    {{comment.msg }}
-                                </div>
+                                <!-- 树状评论 -->
+                                <!-- <Tree :comments="comments"></Tree> -->
+                                <el-empty description="暂无评论" v-if="this.comments.length == 0"></el-empty>
+                                <el-tree :data="comments" :default-expand-all="true" :expand-on-click-node="false"
+                                    v-else>
+                                    <span slot-scope="{data}">
+                                        <span>
+                                            <!-- <el-avatar :size="20"
+                                            :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
+                                        </el-avatar> -->
+                                            {{ data.createBy }}:
+                                            {{ data.content }}<i class="el-icon-chat-line-round" title="回复"
+                                                @click="showDialog('1', data.commentId)"></i>
+                                                <i class="el-icon-delete" title="删除" v-if="data.createBy == getUser.userAlias"
+                                                @click="delComment(data.commentId)"></i>
+                                        </span>
+                                    </span>
+                                </el-tree>
                             </el-card>
+
                         </el-col>
                         <!-- 用来写评论 -->
                         <el-dialog title="评论" :visible.sync="dialogVisible">
-                            <el-input type="textarea" :rows="3" placeholder="不超过两百字哦。" v-model="commentVal">
+                            <el-input type="textarea" :rows="3" placeholder="不超过两百字哦。" v-model="comment.content">
                             </el-input>
                             <span slot="footer" class="dialog-footer">
                                 <el-button @click="dialogVisible = false">取 消</el-button>
-                                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+                                <el-button type="primary" @click="releaseComment()">确 定</el-button>
                             </span>
                         </el-dialog>
                     </el-row>
@@ -62,7 +77,9 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import UserDetail from '../user/UserDetail.vue'
+import Tree from './Tree.vue'
 export default {
     data() {
         return {
@@ -70,67 +87,47 @@ export default {
             title: '',
             tags: [],
             encl: {
-                downPath:''
+                downPath: ''
             },
-            userId:'',
+            userId: '',
             articleId: '',
             // 写评论标识
             dialogVisible: false,
+            comment: {
+                parentId: '',
+                content: '',
+                bizType: '',
+                articleId: ''
+
+            },
             // 输入的评论信息
             commentVal: '',
+            parentId: '',
             // 评论信息
-            comments: [
-                {
-                    // 发言人
-                    UserId: '鄢富友',
-                    // 信息
-                    msg: '这是一条评论',
-                    // 时间
-                    createTime: '2022-09-20',
-                    // 子评论
-                    childComments: [
-                        {
-                            // 发言人
-                            UserId: '鄢富友',
-                            // 信息
-                            msg: '这是二条评论',
-                            // 时间
-                            createTime: '2022-09-20',
-                            // 子评论
-                            childComments: []
-                        }
-                    ]
-                },
-                {
-                    // 发言人
-                    UserId: '鄢富友',
-                    // 信息
-                    msg: '这是一条评论',
-                    // 时间
-                    createTime: '2022-09-20',
-                    // 子评论
-                    childComments: [
-                        {
-                            // 发言人
-                            UserId: '鄢富友',
-                            // 信息
-                            msg: '这是二条评论',
-                            // 时间
-                            createTime: '2022-09-20',
-                            // 子评论
-                            childComments: []
-                        }
-                    ]
-                }
-            ]
+            comments: []
         }
     },
     components: {
-        UserDetail
+        UserDetail,
+        Tree
+    },
+    computed:{
+        ...mapGetters('user',['getUser'])
     },
     methods: {
-        writeComment() {
+        showDialog(bizType, parentId) {
             this.dialogVisible = true;
+            this.comment.parentId = parentId;
+            this.comment.bizType = bizType;
+            this.comment.articleId = this.articleId;
+        },
+        releaseComment() {
+            this.$http.post('/comment/release', this.comment).then(() => {
+                this.dialogVisible = false;
+                // 置空内容
+                this.comment.content = '';
+                this.updateCommentList();
+            });
         },
         getDetail(id) {
             this.$http.get('/article/getArticleInfo/' + id).then(res => {
@@ -154,25 +151,47 @@ export default {
                     // 附件
                     if (res.data.records.enclosure === '1') {
                         this.$http.get('/article/enclInfo/' + res.data.records.id).then(res => {
-                            if(res.data.code === 2000){
+                            if (res.data.code === 2000) {
                                 this.encl = res.data.records;
                             }
                         })
                     }
+                    // 评论
+                    this.updateCommentList();
                 }
             })
         },
-        downFile(){
-            this.$down.myDownLoad(this.encl.downPath,this.encl.fileName);
+        updateCommentList() {
+            // 评论根信息
+            let commentInfo = {
+                articleId: this.articleId,
+                bizType: '2',
+                flag: '0',
+            }
+            // this.$http.post('/comment/getArticleCommentRoots', commentInfo).then(res => {
+            //     console.log(res);
+            //     if (res.data.code === 2000) {
+            //         this.comments = res.data.records;
+            //     }
+            // })
+
+            this.$http.get('/comment/getCommentTree/' + this.articleId).then(res => {
+                this.comments = res.data.records;
+            })
         },
-        addRead(){
+        delComment(commentId){
+        this.$http.get('/comment/del/' + commentId).then(() => this.updateCommentList());
+        },
+        downFile() {
+            this.$down.myDownLoad(this.encl.downPath, this.encl.fileName);
+        },
+        addRead() {
             this.$http.post('')
         }
     },
     mounted() {
         let id = this.$route.query.id;
         this.getDetail(id);
-        
     }
 }
 </script>

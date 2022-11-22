@@ -12,7 +12,7 @@
                     <el-input id="codeIn" v-model="user.verification"></el-input>
                 </el-col>
                 <el-col :span="12">
-                    <div id="code-img"><span title="点击刷新" @click="setCode">{{codeNum}}</span></div>
+                    <div id="code-img"><span title="点击刷新" @click="setCode">{{ codeNum }}</span></div>
                 </el-col>
             </el-row>
 
@@ -67,8 +67,8 @@ export default {
                         userAvatar: res.data.records.userAvatar,
                         loginFlag: true
                     }
-                    window.localStorage.setItem("Bearer",res.data.records.tokenId);
-                    this.$store.commit('user/setUser',user);
+                    window.localStorage.setItem("Bearer", res.data.records.tokenId);
+                    this.$store.commit('user/setUser', user);
                     this.$router.push('/index')
                     this.$notify.success({
                         message: res.data.msg,
@@ -105,6 +105,14 @@ export default {
             this.codeNum = res.data.records.codeNum;
             this.user.codeUid = res.data.records.uid;
         })
+        // 监听回车按键
+        document.onkeydown = function (e) {
+            // console.log(e);
+            if(e.keyCode === 13){
+                submitForm(this.user);
+            }
+        }
+
     }
 }
 </script>

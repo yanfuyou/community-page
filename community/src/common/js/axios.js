@@ -8,13 +8,13 @@ export default {
     install: function (vue) {
         // 创建一个axios
         let result = axios.create({
-            baseURL: 'http://192.168.2.228:8081/community'
+            baseURL: 'http://192.168.199.72:8081/community'
         })
         result.interceptors.request.use(
             config => {
                 let token = window.localStorage.getItem("Bearer");
                 if (token != null) {
-                    config.headers['Authorization'] = token;
+                    config.headers['Authorization'] = "Bearer " + token;
                 }
                 return config;
             },
