@@ -21,11 +21,11 @@
                     <el-row>
                         <el-col :span="24">
                             <el-breadcrumb separator="|" style="color:#2b426e !important;">
-                                <el-breadcrumb-item>文章数：{{user.report.artSum}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>文章数：{{user.report.artSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>资料数：</el-breadcrumb-item>
-                                <el-breadcrumb-item>总访问量：{{user.report.readSum}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>总访问量：{{user.report.readSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>排名：</el-breadcrumb-item>
-                                <el-breadcrumb-item>收藏数：{{user.report.followSum}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>收藏数：{{user.report.followSum | scoreFilter}}</el-breadcrumb-item>
                             </el-breadcrumb>
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
@@ -41,19 +41,19 @@
                         <el-row class="left fra">
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
-                                    <el-button type="success" plain size="mini">全部：{{user.totalFra}}分</el-button>
-                                    <el-button type="warning" plain size="mini">当月：{{user.monthFra}}分</el-button>
+                                    <el-button type="success" plain size="mini">全部：{{user.score.all | scoreFilter}}分</el-button>
+                                    <el-button type="warning" plain size="mini">当月：{{user.score.thisMonth | scoreFilter}}分</el-button>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-row class="left">
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
-                                    <el-tag>标签一</el-tag>
-                                    <el-tag type="success">标签二</el-tag>
+                                    <el-tag v-for="(tag,index) in user.tags" :key="index" :type="tag.labelType">{{tag.labelName}}</el-tag>
+                                    <!-- <el-tag type="success">标签二</el-tag>
                                     <el-tag type="info">标签三</el-tag>
                                     <el-tag type="warning">标签四</el-tag>
-                                    <el-tag type="danger">标签五</el-tag>
+                                    <el-tag type="danger">标签五</el-tag> -->
                                 </div>
                             </el-col>
                         </el-row>
@@ -88,7 +88,9 @@ export default {
             },
             user: {
                 baseInfo: {},
-                report:{}
+                report:{},
+                score: {},
+                tags: {}
             }
         }
     },
@@ -156,11 +158,34 @@ export default {
                     this.user.report = res.data.records;
                 }
             })
+        },
+        setUserScore(){
+            this.$http.post('/user/score?userId=' + this.$route.query.id).then(res => {
+                let score = res.data.records;
+                this.user.score.all = score.all;
+                this.user.score.thisMOnth = score.thisMonth;
+            })
+        },
+        setTags(){
+            this.$http.get('/user/getUserLabels/' + this.$route.query.id).then(res => {
+                this.user.tags = res.data.records;
+            })
         }
+    },
+    filters:{
+      scoreFilter(val){
+        if(val){
+            return val;
+        }else{
+            return 0;
+        }
+      }  
     },
     mounted(){
         this.setBasic();
         this.setReport();
+        this.setUserScore();
+        this.setTags();
     }
 }
 </script>

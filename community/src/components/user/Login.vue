@@ -32,7 +32,8 @@ export default {
                 userName: '',
                 userPassword: '',
                 verification: '',
-                codeUid: ''
+                codeUid: '',
+                codeFlag: '1'
             },
             codeNum: '',
             rules: {
