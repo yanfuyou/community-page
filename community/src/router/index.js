@@ -11,6 +11,8 @@ import Setting from '../components/user/Setting'
 // 文章
 import Write from '../components/article/Write'
 import Preview from '../components/article/Preview'
+// 弹幕
+import TreeHole from '@/components/hole/TreeHole'
 
 const routes = [
     {
@@ -63,6 +65,17 @@ const routes = [
                 meta: { title: '文章详情' }
             }
 
+        ]
+    },
+    {
+        path: '/hole',
+        component: Body,
+        children: [
+            {
+                path: 'tree',
+                component: TreeHole,
+                meta: {title: '嗨！树洞'}
+            }
         ]
     }
 ]

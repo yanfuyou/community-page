@@ -12,10 +12,13 @@ import 'mavon-editor/dist/css/index.css'
 import axios from './common/js/axios'
 // 公共的下载函数
 import down from './common/js/down'
+// 弹幕
+import {vueBaberrage} from 'vue-baberrage'
 
 Vue.use(ElementUI);
 Vue.use(axios);
 Vue.use(mavonEditor);
+Vue.use(vueBaberrage);
 
 Vue.prototype.$down=down;
 

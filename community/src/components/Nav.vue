@@ -14,7 +14,7 @@
           <el-menu-item index="4-2">理学</el-menu-item>
           <el-menu-item index="4-3">工学</el-menu-item>
         </el-submenu>
-        <el-menu-item index="5" @click="dump('/article/preview')">消息中心</el-menu-item>
+        <el-menu-item index="5" @click="dump('/hole/tree')">嗨！树洞</el-menu-item>
         <el-menu-item id="search">
           <el-input placeholder="请输入内容" v-model="searchVal" class="input-with-select">
             <el-select style="width:150px;" v-model="type" slot="prepend" placeholder="请选择">
