@@ -8,7 +8,7 @@ export default {
     install: function (vue) {
         // 创建一个axios
         let result = axios.create({
-            baseURL: 'http://192.168.226.72:8081/community'
+            baseURL: 'http://192.168.10.102:8081/community'
         })
         result.interceptors.request.use(
             config => {
@@ -41,13 +41,9 @@ export default {
                 }
                 if(status === 5000){
                     Message.error(res.data.msg)
-                    // this.$notify.error({
-                    //     message: res.data.msg,
-                    //     offset: 70
-                    // })
                 }
                 if(status === 2000){
-                    Message.success(res.data.msg)
+                    // Message.success(res.data.msg)
                 }
                 if(status === 6000){
                     Message.waring(res.data.msg)

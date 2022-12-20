@@ -12,9 +12,9 @@
         </div>
         <div class="barInput">
             <el-input placeholder="请输入内容" v-model="barMsg.msg" class="input-with-select">
-                <el-select v-model="barMsg.private" slot="prepend" placeholder="请选择" >
-                    <el-option label="公开" value="0"></el-option>
-                    <el-option label="私有" value="1"></el-option>
+                <el-select v-model="barMsg.pub" slot="prepend" placeholder="请选择">
+                    <el-option label="公开" value="1"></el-option>
+                    <el-option label="私有" value="0"></el-option>
                 </el-select>
                 <el-button slot="append" icon="el-icon-s-promotion" @click="sendBar">保存</el-button>
             </el-input>
@@ -23,6 +23,7 @@
 </template>
 <script>
 import { mapGetters } from 'vuex';
+const BAR_STYLE = ['blue', 'green', 'red', 'rellow', 'palevioletred']
 export default {
     name: 'Barrages',
     data() {
@@ -33,13 +34,10 @@ export default {
             maxWordCount: 1000,
             throttleGap: 5000,
             barrageList: [],
-            imgUrl: 'https://iconfont.alicdn.com/p/illus/file/j6xtlDsgsgVO/fb0f499d-1ea5-4962-9baf-17210f6eb503_origin.svg',
+            imgUrl: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png',
             barMsg: {
-                id: '',
-                private: '0',
-                msg: '',
-                avatar: '',
-                barrageStyle: 'red'
+                pub: '1',
+                msg: ''
             }
         };
     },
@@ -53,96 +51,30 @@ export default {
         this.addToList();
     },
     methods: {
-        sendBar(){
-            this.barMsg.avatar = this.avatarUrl;
-            console.log(this.barMsg);
+        sendBar() {
+            // 发送
+            this.$http.post('/hole/update', this.barMsg)
         },
         hoverLanePause() {
             console.log("获取焦点");
         },
         addToList() {
-            let list = [
-                {
-                    id: 1,
-                    avatar: 'https://iconfont.alicdn.com/p/illus/file/j6xtlDsgsgVO/fb0f499d-1ea5-4962-9baf-17210f6eb503_origin.svg',
-                    msg: '是js的超集，功能比js更丰富。写代码的时免不了引入第三方库但是现在的大部分库还是',
-                    time: 10,
-                    barrageStyle: 'red'
-                },
-                {
-                    id: 2,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 8,
-                    barrageStyle: 'green'
-                },
-                {
-                    id: 3,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 10,
-                    barrageStyle: 'normal'
-                },
-                {
-                    id: 4,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 5,
-                    barrageStyle: 'blue'
-                },
-                {
-                    id: 5,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 6,
-                    barrageStyle: 'red'
-                },
-                {
-                    id: 6,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 12,
-                    barrageStyle: 'normal'
-                },
-                {
-                    id: 7,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 5,
-                    barrageStyle: 'red'
-                },
-                {
-                    id: 8,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 5,
-                    barrageStyle: 'normal'
-                },
-                {
-                    id: 9,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 8,
-                    barrageStyle: 'red'
-                },
-                {
-                    id: 10,
-                    avatar: this.imgUrl,
-                    msg: this.msg,
-                    time: 10,
-                    barrageStyle: 'yellow'
-                }
-            ];
-            list.forEach((v) => {
-                this.barrageList.push({
-                    id: v.id,
-                    avatar: v.avatar,
-                    msg: v.msg,
-                    time: v.time,
-                    // type: MESSAGE_TYPE.NORMAL,
-                    barrageStyle: v.barrageStyle
-                });
-            });
+            let list = []
+            this.$http.post('/hole/page', { "current": 1, "size": 1000, "orders": [{ "column": 't.CREATE_TIME', "asc": false }], "queryParam": { "flag": 0, "pub": '1' } }).then(res => {
+                if (res.data.code === 2000) {
+                    list = res.data.records.records
+                    list.forEach((v) => {
+                        v.barrageStyle = BAR_STYLE[parseInt(Math.random() * BAR_STYLE.length, 10)]
+                        this.barrageList.push({
+                            id: v.id,
+                            avatar: v.avatar,
+                            msg: v.msg,
+                            time: v.time,
+                            barrageStyle: v.barrageStyle
+                        });
+                    });
+                };
+            })
         }
     }
 };
@@ -181,6 +113,12 @@ export default {
         overflow: hidden;
         top: 0;
         margin-top: 130px;
+    }
+
+    .palevioletred {
+        border-radius: 100px;
+        background: #D87093;
+        color: #fff;
     }
 }
 
