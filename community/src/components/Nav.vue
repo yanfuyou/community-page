@@ -107,7 +107,7 @@ export default {
   width: 100%;
   /* 固定导航栏 */
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
 }
 
 #top {

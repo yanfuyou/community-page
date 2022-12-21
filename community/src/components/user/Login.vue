@@ -106,13 +106,13 @@ export default {
             this.codeNum = res.data.records.codeNum;
             this.user.codeUid = res.data.records.uid;
         })
-        // 监听回车按键
-        document.onkeydown = function (e) {
-            // console.log(e);
-            if(e.keyCode === 13){
-                submitForm(this.user);
-            }
-        }
+        // // 监听回车按键
+        // document.onkeydown = function (e) {
+        //     // console.log(e);
+        //     if(e.keyCode === 13){
+        //         submitForm(this.user);
+        //     }
+        // }
 
     }
 }

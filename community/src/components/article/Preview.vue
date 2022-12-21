@@ -6,19 +6,27 @@
             </el-aside>
             <el-container>
                 <el-main>
-                    <el-row :gutter="10">
+                    <el-row :gutter="24">
                         <el-col :span="6">
                             <el-input type="text" readonly="" v-model="title" show-word-limit>
                             </el-input>
                         </el-col>
-                        <el-col :span="8">
+                        <el-col :span="7">
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
                         </el-col>
-                        <el-col :span="10">
+                        <el-col :span="8">
                             <span v-if="encl.downPath != ''" class="fileClass" @click="downFile">
                                 <el-tag type="info" effect="dark">附件</el-tag>{{ encl.fileName }}<i
                                     class="el-icon-download"></i>
                             </span>
+                        </el-col>
+                        <el-col :span="3">
+                            <el-tag type="info" v-if="!collect.flag" @click="addCollect">
+                                <i class="el-icon-star-off">收藏</i>
+                            </el-tag>
+                            <el-tag v-else @click="removeCollect">
+                                <i class="el-icon-star-on">已收藏</i>
+                            </el-tag>
                         </el-col>
                     </el-row>
                     <el-row>
@@ -30,7 +38,7 @@
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <el-card class="box-card" style="line-height:5px">
+                            <el-card class="box-card" style="line-height:5px; margin-bottom: 50px;">
                                 <div slot="header" class="clearfix">
                                     <el-badge :value="''" class="item">
                                         <el-button size="small">评论</el-button>
@@ -52,7 +60,8 @@
                                             {{ data.createBy }}:
                                             {{ data.content }}<i class="el-icon-chat-line-round" title="回复"
                                                 @click="showDialog('1', data.commentId)"></i>
-                                                <i class="el-icon-delete" title="删除" v-if="data.createBy == getUser.userAlias"
+                                            <i class="el-icon-delete" title="删除"
+                                                v-if="data.createBy == getUser.userAlias"
                                                 @click="delComment(data.commentId)"></i>
                                         </span>
                                     </span>
@@ -98,21 +107,24 @@ export default {
                 content: '',
                 bizType: '',
                 articleId: ''
-
             },
             // 输入的评论信息
             commentVal: '',
             parentId: '',
             // 评论信息
-            comments: []
+            comments: [],
+            collect: {
+                id: ' ',
+                flag: false,
+            }
         }
     },
     components: {
         UserDetail,
         Tree
     },
-    computed:{
-        ...mapGetters('user',['getUser'])
+    computed: {
+        ...mapGetters('user', ['getUser'])
     },
     methods: {
         showDialog(bizType, parentId) {
@@ -162,36 +174,62 @@ export default {
             })
         },
         updateCommentList() {
-            // 评论根信息
-            let commentInfo = {
-                articleId: this.articleId,
-                bizType: '2',
-                flag: '0',
-            }
-            // this.$http.post('/comment/getArticleCommentRoots', commentInfo).then(res => {
-            //     console.log(res);
-            //     if (res.data.code === 2000) {
-            //         this.comments = res.data.records;
-            //     }
-            // })
-
             this.$http.get('/comment/getCommentTree/' + this.articleId).then(res => {
                 this.comments = res.data.records;
             })
         },
-        delComment(commentId){
-        this.$http.get('/comment/del/' + commentId).then(() => this.updateCommentList());
+        delComment(commentId) {
+            this.$http.get('/comment/del/' + commentId).then(() => this.updateCommentList());
         },
         downFile() {
             this.$down.myDownLoad(this.encl.downPath, this.encl.fileName);
         },
         addRead() {
             this.$http.post('')
+        },
+        delCollect() {
+            this.$http.delete('/collect/del/' + this.collect.id)
+        },
+        addCollect() {
+            let info = {
+                userId: this.getUser.id,
+                relId: this.$route.query.id,
+                bizType: '1',
+            }
+            this.$http.post('/collect/save', info).then(res => {
+                if (res.data.code === 2000) {
+                    this.collected()
+                }
+            })
+
+        },
+        collected() {
+            this.$http.get('/collect/collected/' + this.getUser.id + '/' + this.$route.query.id).then(res => {
+                if (res.data.records) {
+                    this.collect.id = res.data.records
+                    this.collect.flag = true
+                }else{
+                    this.collect.id = ''
+                    this.collect.flag = false
+                }
+            })
+        },
+        removeCollect() {
+            let info = {
+                id: this.collect.id,
+                flag: '1'
+            }
+            this.$http.post('/collect/save', info).then(res => {
+                if (res.data.code === 2000) {
+                    this.collected()
+                }
+            })
         }
     },
-    mounted() {
+    created() {
         let id = this.$route.query.id;
         this.getDetail(id);
+        this.collected()
     }
 }
 </script>
