@@ -30,27 +30,32 @@
             </el-col>
         </el-row>
         <el-row :gutter="20">
-            <el-col :span="8">
-                <div class="grid-content bg-purple"></div>
+            <el-col :span="12">
+                <!-- <div class="grid-content bg-purple"></div> -->
+                <el-tabs v-model="activeName" type="card">
+                    <el-tab-pane label="推荐" name="first">
+                        <ArticleList></ArticleList>
+                    </el-tab-pane>
+                    <el-tab-pane label="热榜" name="second">
+                        <ArticleList></ArticleList>
+                    </el-tab-pane>
+                    <el-tab-pane label="高效" name="third">
+                        <!-- 资料内容 -->
+                        <Sources ></Sources>
+                    </el-tab-pane>
+                    <el-tab-pane label="平台推荐" name="fourth">
+                        <ArticleList></ArticleList>
+                    </el-tab-pane>
+                </el-tabs>
             </el-col>
-            <el-col :span="8">
-                <div class="grid-content bg-purple"></div>
+            <el-col :span="7">
+                <div class="grid-content bg-purple team">
+                    <i class="el-icon-document type"><span>队伍招募</span></i>
+                    <!-- 引入队伍列表 -->
+                    <div></div>
+                </div>
             </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="4">
-                <div class="grid-content bg-purple"></div>
-            </el-col>
-        </el-row>
-        <el-row :gutter="20">
-            <el-col :span="4">
-                <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="16">
-                <div class="grid-content bg-purple"></div>
-            </el-col>
-            <el-col :span="4">
+            <el-col :span="5">
                 <div class="grid-content bg-purple"></div>
             </el-col>
         </el-row>
@@ -63,14 +68,22 @@ import Car from './Car.vue'
 import Hot from './Hot.vue'
 // 头条列表
 import HeadLine from './HeadLIne.vue'
+// 文章列表
+import ArticleList from '@/components/user/ArticleList'
+// 资料列表
+import Sources from '@/components/user/Sources'
 export default {
     data() {
-        return {}
+        return {
+            activeName: 'first'
+        }
     },
     components: {
         Car,
         Hot,
-        HeadLine
+        HeadLine,
+        ArticleList,
+        Sources
     }
 }
 </script>
@@ -125,6 +138,11 @@ export default {
 
 .one {
     height: 300px;
+}
+
+.team {
+    border: black dashed 1px;
+    background: none;
 }
 </style>
   

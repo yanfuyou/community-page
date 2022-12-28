@@ -13,7 +13,7 @@ import Write from '../components/article/Write'
 import Preview from '../components/article/Preview'
 // 弹幕
 import TreeHole from '@/components/hole/TreeHole'
-
+import EnList from '@/components/team/EnList'
 const routes = [
     {
         path: '/',
@@ -40,12 +40,12 @@ const routes = [
             }, {
                 path: 'userhome',
                 component: UserHome,
-                meta: {title:'用户主页'}
+                meta: { title: '用户主页' }
             },
             {
                 path: 'setting',
                 component: Setting,
-                meta: {title: '设置'}
+                meta: { title: '设置' }
             }
         ]
     },
@@ -74,7 +74,18 @@ const routes = [
             {
                 path: 'tree',
                 component: TreeHole,
-                meta: {title: '嗨！树洞'}
+                meta: { title: '嗨！树洞' }
+            }
+        ]
+    },
+    {
+        path: '/team',
+        component: Body,
+        children: [
+            {
+                path: 'enlist',
+                component: EnList,
+                meta: { title: '发布保招募信息' }
             }
         ]
     }

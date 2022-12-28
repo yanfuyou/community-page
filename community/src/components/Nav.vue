@@ -36,17 +36,20 @@
               <span class="el-dropdown-link">
                 <el-avatar :src="getUser.userAvatar"></el-avatar>
               </span>
-              <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
               <el-dropdown-menu slot="dropdown">
                 <el-badge :value="2" class="item" type="warning">
                   <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item>
                 </el-badge>
-                <el-dropdown-item icon="el-icon-bell" @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-bell"
+                  @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-setting" @click.native="dump('/user/setting')">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
+            <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
+            <i class="el-icon-medal-1 write"><span @click="dump('/team/enlist')">找队员</span></i>
+            <i class="el-icon-receiving write"><span @click="dump('/article/write')">传资料</span></i>
           </div>
         </el-menu-item>
       </el-menu>
@@ -120,6 +123,7 @@ export default {
 
 .write {
   margin-left: 30px;
+  padding-left: 20px;
 }
 
 .el-select .el-input {
