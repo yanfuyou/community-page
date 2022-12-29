@@ -4,6 +4,8 @@ import Vuex from "vuex";
 import user from './module/user'
 // 首页相关
 import homePage from './module/homePage'
+// 聚焦
+import focus from './module/focus'
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
@@ -18,7 +20,8 @@ const store = new Vuex.Store({
     },
     modules: {
         user: user,
-        homePage: homePage
+        homePage: homePage,
+        focus: focus
     }
 })
 

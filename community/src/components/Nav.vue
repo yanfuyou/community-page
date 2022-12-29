@@ -6,7 +6,7 @@
           <el-button class="button-new-tag" size="small" @click="dump('/index')">交流社区</el-button>
         </el-menu-item>
         <el-menu-item index="1" @click="dump('/index')">首页</el-menu-item>
-        <el-menu-item index="2">聚焦</el-menu-item>
+        <el-menu-item index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
         <el-menu-item index="3">兴趣</el-menu-item>
         <el-submenu index="4">
           <template slot="title">学习</template>

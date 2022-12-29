@@ -14,6 +14,8 @@ import Preview from '../components/article/Preview'
 // 弹幕
 import TreeHole from '@/components/hole/TreeHole'
 import EnList from '@/components/team/EnList'
+// 聚焦
+import Focus from '@/components/focus/Focus'
 const routes = [
     {
         path: '/',
@@ -86,6 +88,17 @@ const routes = [
                 path: 'enlist',
                 component: EnList,
                 meta: { title: '发布保招募信息' }
+            }
+        ]
+    },
+    {
+        path: '/focus',
+        component: Body,
+        children: [
+            {
+                path: 'focusPage',
+                component: Focus,
+                meta: { title: '聚焦' }
             }
         ]
     }

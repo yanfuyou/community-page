@@ -31,17 +31,16 @@
         </el-row>
         <el-row :gutter="20">
             <el-col :span="12">
-                <!-- <div class="grid-content bg-purple"></div> -->
                 <el-tabs v-model="activeName" type="card">
-                    <el-tab-pane label="推荐" name="first">
-                        <ArticleList></ArticleList>
+                    <el-tab-pane label="最新" name="first">
+                        <ArticleList :articles="articles"></ArticleList>
                     </el-tab-pane>
                     <el-tab-pane label="热榜" name="second">
-                        <ArticleList></ArticleList>
+                        <ArticleList :articles="getHots"></ArticleList>
                     </el-tab-pane>
                     <el-tab-pane label="高效" name="third">
                         <!-- 资料内容 -->
-                        <Sources ></Sources>
+                        <Sources></Sources>
                     </el-tab-pane>
                     <el-tab-pane label="平台推荐" name="fourth">
                         <ArticleList></ArticleList>
@@ -75,7 +74,9 @@ import Sources from '@/components/user/Sources'
 export default {
     data() {
         return {
-            activeName: 'first'
+            activeName: 'first',
+            articles: [],
+            hots: []
         }
     },
     components: {
@@ -84,6 +85,46 @@ export default {
         HeadLine,
         ArticleList,
         Sources
+    },
+    computed: {
+        getHots() {
+            // 需要使用深拷贝赋值
+            let latelys = JSON.parse(JSON.stringify(this.articles));
+            if (latelys.length > 0) {
+                // 按阅读量排序
+                for (let i = 0; i < latelys.length; i++) {
+                    for (let j = 0; j < latelys.length - i - 1; j++) {
+                        if (latelys[j].readCount < latelys[j + 1].readCount) {
+                            const temp = latelys[j];
+                            latelys[j] = latelys[j + 1];
+                            latelys[j + 1] = temp;
+                        }
+                    }
+                }
+            }
+            return latelys;
+        },
+    },
+    methods: {
+        setArticles() {
+            let dto = {
+                current: 1,
+                size: 30,
+                flag: '0',
+                orders: [
+                    {
+                        asc: false,
+                        column: 'CREATE_TIME'
+                    }
+                ]
+            }
+            this.$http.post('article/miniList', dto).then(res => {
+                this.articles = res.data.records.records;
+            })
+        }
+    },
+    created() {
+        this.setArticles();
     }
 }
 </script>

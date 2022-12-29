@@ -1,6 +1,6 @@
 <template>
     <div id="article">
-        <div id="articleList" v-for="(article, index) in articles" :key="index">
+        <div id="articleList" v-for="(article, index) in articles" :key="index" @click="dump('/aticle/preview',article.id)">
             <el-row>
                 <el-col :span="24">
                     <div class="ArticleTitle">
@@ -11,7 +11,7 @@
             <el-row>
                 <el-col :span="24">
                     <div class="articleContent">
-                        {{ article.articleContent | contentFilter}}
+                        {{ article.articleContent | contentFilter }}
                     </div>
                 </el-col>
             </el-row>
@@ -43,12 +43,20 @@ export default {
                 + val.substring(8, 10) + ':' + val.substring(10, 12) + ':' + val.substring(12, 14);
         },
         contentFilter(val) {
-            val = val.replaceAll(':','');
-            val = val.replaceAll('#','');
-            val = val.replaceAll('hljs-center','');
+            val = val.replaceAll(':', '');
+            val = val.replaceAll('#', '');
+            val = val.replaceAll('hljs-center', '');
             return val;
         }
     },
+    methods: {
+        dump(path, id) {
+            this.$router.push({
+                path: '/article/preview',
+                query: { id }
+            })
+        }
+    }
 }
 </script>
 

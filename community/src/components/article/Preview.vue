@@ -20,7 +20,7 @@
                                     class="el-icon-download"></i>
                             </span>
                         </el-col>
-                        <el-col :span="3">
+                        <el-col :span="3" v-if="getUser.id">
                             <el-tag type="info" v-if="!collect.flag" @click="addCollect">
                                 <i class="el-icon-star-off">收藏</i>
                             </el-tag>
@@ -204,15 +204,17 @@ export default {
 
         },
         collected() {
-            this.$http.get('/collect/collected/' + this.getUser.id + '/' + this.$route.query.id).then(res => {
-                if (res.data.records) {
-                    this.collect.id = res.data.records
-                    this.collect.flag = true
-                }else{
-                    this.collect.id = ''
-                    this.collect.flag = false
-                }
-            })
+            if (this.getUser.id) {
+                this.$http.get('/collect/collected/' + this.getUser.id + '/' + this.$route.query.id).then(res => {
+                    if (res.data.records) {
+                        this.collect.id = res.data.records
+                        this.collect.flag = true
+                    } else {
+                        this.collect.id = ''
+                        this.collect.flag = false
+                    }
+                })
+            }
         },
         removeCollect() {
             let info = {
@@ -224,12 +226,17 @@ export default {
                     this.collected()
                 }
             })
+        },
+        readPlus(id) {
+            // 阅读量加一
+            this.$http.get('/article/readPlusOne/' + id);
         }
     },
     created() {
         let id = this.$route.query.id;
         this.getDetail(id);
-        this.collected()
+        this.collected();
+        this.readPlus(id);
     }
 }
 </script>

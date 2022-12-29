@@ -25,14 +25,13 @@ export default {
             this.$router.push({
                 path: '/article/preview',
                 query: { id }
-
             })
         }
     },
     mounted() {
         this.$http.get('/article/getHots/0/5').then(res => {
             if (res.data.code === 2000) {
-                console.log(res.data.records);
+                // console.log(res.data.records);
                 this.$store.commit('homePage/setHots', res.data.records)
             }
         })
