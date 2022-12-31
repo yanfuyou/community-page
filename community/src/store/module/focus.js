@@ -1,10 +1,10 @@
 const focus = {
-    namespaace: true,
+    namespaced: true,
     state: {
         checkedTags: []
     },
     getters: {
-        getChekedTags(state) {
+        getCheckedTags(state) {
             return state.checkedTags;
         }
     },

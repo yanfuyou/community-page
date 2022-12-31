@@ -36,20 +36,11 @@ export default {
             }else{
                 this.myCheck.push(id);
             }
-            this.$store.dispatch('setCheckedTags',this.myCheck);
+            this.$store.dispatch('focus/setCheckedTags',this.myCheck);
         }
     },
     created() {
         this.setTags();
-    },
-    watch:{
-        'myCheck': {
-            handler(newv,oldv){
-                console.log(newv);
-            },
-            deep: true,
-            immediate: true
-        }
     }
 }
 </script>

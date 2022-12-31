@@ -4,7 +4,7 @@
             <div class="grid-content bg-purple">学而时习之，不亦说乎!</div>
             <el-tabs v-model="activeName" type="card">
                 <el-tab-pane label="文章" name="first">
-                    <!-- <ArticleList :articles="articles"></ArticleList> -->
+                    <ArticleList :articles="articles"></ArticleList>
                 </el-tab-pane>
                 <el-tab-pane label="资源" name="second">
                     <!-- <ArticleList :articles="getHots"></ArticleList> -->
@@ -19,10 +19,43 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
+import ArticleList from '@/components/user/ArticleList.vue'
 export default {
     data() {
         return {
-            activeName:'first'
+            activeName: 'first',
+            checkedTags: [],
+            articles: []
+        }
+    },
+    components: {
+        ArticleList
+    },
+    computed: {
+        ...mapGetters('focus', ['getCheckedTags'])
+    },
+    watch: {
+        'getCheckedTags': {
+            handler(val) {
+                this.checkedTags = val
+                this.articles = []
+                for (let i = 0; i < this.checkedTags.length; i++) {
+                    let dto = {
+                        current: 1,
+                        size: 30,
+                        flag: '0',
+                        articleLabels: this.checkedTags[i]
+                    }
+                    this.$http.post('article/miniList', dto).then(res => {
+                        this.articles = this.articles.concat(res.data.records.records);
+                    })
+                }
+
+
+            },
+            deep: true,
+            immediate: true
         }
     }
 }
