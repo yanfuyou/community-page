@@ -51,7 +51,7 @@
                 <div class="grid-content bg-purple team">
                     <i class="el-icon-document type"><span>队伍招募</span></i>
                     <!-- 引入队伍列表 -->
-                    <div></div>
+                    <TeamList></TeamList>
                 </div>
             </el-col>
             <el-col :span="5">
@@ -71,6 +71,7 @@ import HeadLine from './HeadLIne.vue'
 import ArticleList from '@/components/user/ArticleList'
 // 资料列表
 import Sources from '@/components/user/Sources'
+import TeamList from '@/components/team/TeamList.vue'
 export default {
     data() {
         return {
@@ -84,7 +85,8 @@ export default {
         Hot,
         HeadLine,
         ArticleList,
-        Sources
+        Sources,
+        TeamList
     },
     computed: {
         getHots() {
