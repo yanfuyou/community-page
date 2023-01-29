@@ -9,22 +9,24 @@
                     </el-form-item>
                     <el-form-item label="赛事链接">
                         <el-link v-if="team.url" type="success" :href="team.url" target="_blank">{{
-        team.url
-}}</el-link>
+                            team.url
+                        }}</el-link>
                         <el-link v-else disable>暂无</el-link>
                     </el-form-item>
                     <el-form-item label="时间区间">
                         <el-col :span="11">
-                            <el-date-picker v-model="team.startTime" type="datetime" readonly>
+                            <el-date-picker v-model="team.startTime" value-format="yyyyMMddHHmmSS" type="datetime"
+                                readonly>
                             </el-date-picker>
                         </el-col>
                         <el-col :span="11">
-                            <el-date-picker v-model="team.endTime" type="datetime" readonly>
+                            <el-date-picker v-model="team.endTime" value-format="yyyyMMddHHmmSS" type="datetime"
+                                readonly>
                             </el-date-picker>
                         </el-col>
                     </el-form-item>
                     <el-form-item label="队伍描述">
-                        <el-input type="textarea" :rows="2" readonly v-model="team.desc">
+                        <el-input type="textarea" :rows="2" readonly v-model="team.descr">
                         </el-input>
                     </el-form-item>
                     <el-form-item label="所需人数">
@@ -32,7 +34,7 @@
                             :disabled="true"></el-input-number>
                     </el-form-item>
                     <el-form-item label="参与方式">
-                        <el-radio-group v-model="team.onLine" size="medium">
+                        <el-radio-group v-model="team.online" size="medium">
                             <el-radio border label="1" disabled>线下</el-radio>
                             <el-radio border label="2" disabled>线上</el-radio>
                         </el-radio-group>
@@ -52,7 +54,7 @@
                             <el-input v-model="teamUser.name"></el-input>
                         </el-form-item>
                         <el-form-item label="自我介绍" :label-width="formLabelWidth">
-                            <el-input v-model="teamUser.desc"></el-input>
+                            <el-input type="textarea" :rows="3" v-model="teamUser.intr"></el-input>
                         </el-form-item>
                         <el-form-item label="联系方式" :label-width="formLabelWidth">
                             <el-input v-model="teamUser.contact" placeholder="如123123(自行注明是电话或者微信等)"></el-input>
@@ -60,10 +62,11 @@
                     </el-form>
                     <div class="demo-drawer__footer">
                         <el-button @click="cancelForm">取 消</el-button>
-                        <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{ loading ?
-        '提交中 ...'
-        : '确 定'
-                            }}</el-button>
+                        <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{
+                            loading?
+                        '提交中 ...'
+                                : '确 定'
+                        }}</el-button>
                     </div>
                 </div>
             </el-drawer>
@@ -75,38 +78,21 @@ export default {
     data() {
         return {
             activeName: '0',
-            teamList: [{
-                id: '001',
-                name: '测试邀请',
-                url: 'http://www.baidu.com',
-                startTime: '',
-                endTime: '',
-                onLine: '1',
-                num: 1,
-                desc: ''
-            },
-            {
-                id: '002',
-                name: '测试邀请2',
-                url: '32',
-                startTime: '',
-                endTime: '',
-                onLine: '1',
-                num: 1,
-                desc: ''
-            }],
+            // 页码
+            current: 1,
+            teamList: [],
             // 抽屉数据
             table: false,
             dialog: false,
             loading: false,
             teamUser: {
-                name: '',
-                desc: '',
+                intr: '',
                 contact: '',
-                teamId: ''
+                name: '',
+                teamId: '',
+                userId: ''
             },
             formLabelWidth: '80px',
-            timer: null,
         };
     },
     methods: {
@@ -122,21 +108,46 @@ export default {
                 .then(_ => {
                     this.loading = true;
                     // 执行提交操作
-                    console.log(this.teamUser);
-                    this.timer = setTimeout(() => {
-                        // 动画关闭需要一定的时间
-                        setTimeout(() => {
+                    this.teamUser.userId = this.$store.getters['user/getUser'].id;
+                    this.$http.post('/team/addRel', this.teamUser).then(res => {
+                        if (res.data.code === 2000) {
+                            this.$notify.success({
+                                message: '报名成功',
+                                offset: 70
+                            })
                             this.loading = false;
-                        }, 400);
-                    }, 2000);
-                })
-                .catch(_ => { });
+                            this.dialog = false;
+                        }
+                    }).catch(err => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+                }).catch(_ => { });
         },
         cancelForm() {
             this.loading = false;
             this.dialog = false;
-            clearTimeout(this.timer);
+        },
+        setTeamList() {
+            let teamDto = {
+                current: this.current,
+                size: 15,
+                queryParam: {
+                    flag: 0
+                }
+            }
+            this.$http.post('/team/list', teamDto).then(res => {
+                if (res.data.code === 2000) {
+                    this.teamList = res.data.records.records;
+                    this.current = res.data.records.currend;
+                }
+            }).catch(err => {
+                console.log(err);
+            })
         }
+    },
+    created() {
+        this.setTeamList();
     }
 }
 </script>

@@ -27,7 +27,10 @@ export default {
                 const status = Number(res.data.code) || 200;
                 if (status === 401) {
                     console.log('登录过期');
-                    Message.error(res.data.msg)
+                    Message.error({
+                        message: res.data.msg,
+                        offset: 70
+                    })
                     setTimeout(() => {
                         let user = {
                             id: '',
@@ -40,13 +43,19 @@ export default {
                     }, '1000');
                 }
                 if(status === 5000){
-                    Message.error(res.data.msg)
+                    Message.error({
+                        message: res.data.msg,
+                        offset: 70
+                    })
                 }
                 if(status === 2000){
                     // Message.success(res.data.msg)
                 }
                 if(status === 6000){
-                    Message.waring(res.data.msg)
+                    Message.warning({
+                        message: res.data.msg,
+                        offset: 70
+                    })
                 }
                 return res;
             },

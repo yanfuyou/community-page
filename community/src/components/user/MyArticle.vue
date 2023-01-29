@@ -10,7 +10,9 @@
         <el-tab-pane label="资源" name="third">
             <Sources :sources="sources"></Sources>
         </el-tab-pane>
-        <el-tab-pane label="视频" name="fourth">定时任务补偿</el-tab-pane>
+        <el-tab-pane label="队伍" name="fourth">
+            <my-team></my-team>
+        </el-tab-pane>
         <el-tab-pane label="收藏" name="five">
             <!-- 截取一部分文章 -->
             <ArticleList :articles="getColletions"></ArticleList>
@@ -21,6 +23,7 @@
 <script>
 import ArticleList from './ArticleList.vue'
 import Sources from './Sources.vue'
+import MyTeam from '@/components/user/MyTeam.vue'
 export default {
     data() {
         return {
@@ -83,7 +86,8 @@ export default {
     },
     components: {
         ArticleList,
-        Sources
+        Sources,
+        MyTeam
     },
     methods: {
         handleClick(tab, event) {
