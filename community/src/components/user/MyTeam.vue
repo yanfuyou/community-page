@@ -22,8 +22,8 @@
             </el-table-column>
             <el-table-column fixed="right" label="操作" nin-width="100">
                 <template slot-scope="scope">
-                    <el-button @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
-                    <el-button type="text" size="small">编辑</el-button>
+                    <el-button v-if="scope.row.createBy == getUserName" @click="handleClick(scope.row)" type="text" size="small">查看</el-button>
+                    <el-button v-else @click="quitTeam(scope.row.relId)" type="text" size="small">退出</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -43,13 +43,25 @@ export default {
         handleClick(row) {
             this.dialogTableVisible = true
             this.$http.get('/team/getTeamer/' + row.teamId).then(res => {
-                console.log(res.data.records);
+                // console.log(res.data.records);
                 this.teamer = res.data.records;
             })
         },
         setTableData() {
             this.$http.get('/team/getMyTeam/' + this.$store.getters['user/getUser'].id).then(res => {
+                console.log(res.data);
                 this.tableData = res.data.records;
+            })
+        },
+        quitTeam(id){
+            this.$http.get('/team/delRel/' + id).then(res => {
+                this.$notify({
+                    message: res.data.msg,
+                    offset: 70
+                })
+                this.setTableData();
+            }).catch(err => {
+                console.log(err);
             })
         }
     },
@@ -60,6 +72,11 @@ export default {
     },
     created() {
         this.setTableData();
+    },
+    computed: {
+        getUserName(){
+            return this.$store.getters['user/getUser'].userName;
+        }
     },
     data() {
         return {
