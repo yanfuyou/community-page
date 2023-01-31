@@ -49,7 +49,7 @@
             </el-dropdown>
             <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
             <i class="el-icon-medal-1 write"><span @click="dump('/team/enlist')">找队员</span></i>
-            <i class="el-icon-receiving write"><span @click="dump('/article/write')">传资料</span></i>
+            <i class="el-icon-receiving write"><span @click="dump('/material/upload')">传资料</span></i>
           </div>
         </el-menu-item>
       </el-menu>

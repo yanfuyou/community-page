@@ -16,6 +16,8 @@ import TreeHole from '@/components/hole/TreeHole'
 import EnList from '@/components/team/EnList'
 // 聚焦
 import Focus from '@/components/focus/Focus'
+// 资料
+import MaUpload from '@/components/material/MaUpload'
 const routes = [
     {
         path: '/',
@@ -99,6 +101,17 @@ const routes = [
                 path: 'focusPage',
                 component: Focus,
                 meta: { title: '聚焦' }
+            }
+        ]
+    },
+    {
+        path: '/material',
+        component: Body,
+        children: [
+            {
+                path: 'upload',
+                component: MaUpload,
+                meta: { title: '资料上传' }
             }
         ]
     }

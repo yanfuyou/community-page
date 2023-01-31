@@ -49,7 +49,7 @@ export default {
         },
         setTableData() {
             this.$http.get('/team/getMyTeam/' + this.$store.getters['user/getUser'].id).then(res => {
-                console.log(res.data);
+                // console.log(res.data);
                 this.tableData = res.data.records;
             })
         },

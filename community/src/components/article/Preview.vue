@@ -61,7 +61,7 @@
                                             {{ data.content }}<i class="el-icon-chat-line-round" title="回复"
                                                 @click="showDialog('1', data.commentId)"></i>
                                             <i class="el-icon-delete" title="删除"
-                                                v-if="data.createBy == getUser.userAlias"
+                                                v-if="data.createBy == getUser.userName"
                                                 @click="delComment(data.commentId)"></i>
                                         </span>
                                     </span>

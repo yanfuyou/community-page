@@ -1,6 +1,8 @@
 <template>
     <div id="article">
-        <div id="articleList" v-for="(article, index) in articles" :key="index" @click="dump('/aticle/preview',article.id)">
+        <el-empty :image-size="200" v-if="articles.length == 0"></el-empty>
+        <div v-else id="articleList" v-for="(article, index) in articles" :key="index"
+            @click="dump('/aticle/preview', article.id)">
             <el-row>
                 <el-col :span="24">
                     <div class="ArticleTitle">
@@ -22,6 +24,7 @@
                         <el-breadcrumb-item>阅读量{{ article.readCount }}</el-breadcrumb-item>
                         <el-breadcrumb-item>得分{{ article.scoreCount }}</el-breadcrumb-item>
                         <el-breadcrumb-item>评论数{{ article.commCount }}</el-breadcrumb-item>
+                        <el-breadcrumb-item><el-button size="mini" round>删除</el-button></el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-divider></el-divider>
                 </el-col>
@@ -32,9 +35,9 @@
 
 <script>
 export default {
-    props: ['articles'],
     data() {
         return {
+
         }
     },
     filters: {
@@ -55,6 +58,12 @@ export default {
                 path: '/article/preview',
                 query: { id }
             })
+        }
+    },
+    props: {
+        articles: {
+            type: Array,
+            default: ()=> {return []}
         }
     }
 }

@@ -5,7 +5,7 @@
             <ArticleList :articles="getLately"></ArticleList>
         </el-tab-pane>
         <el-tab-pane label="文章" name="second">
-            <ArticleList :articles="getArticles"></ArticleList>
+            <ArticleList :articles="articles"></ArticleList>
         </el-tab-pane>
         <el-tab-pane label="资源" name="third">
             <Sources :sources="sources"></Sources>
@@ -29,28 +29,7 @@ export default {
         return {
             activeName: 'second',
             articles: [],
-            sources: [
-                {
-                    id: '001',
-                    name: '一个小小的资源',
-                    content: '一段小小小小小的源代码',
-                    downPath: '暂留，应该不需要的',
-                    siurceSuffix: 'pdf',
-                    downCount: '1000',
-                    updateTime: '2022-29-01',
-                    giveCount: '100'
-                },
-                {
-                    id: '002',
-                    name: 'java教.xlsx',
-                    content: 'java永远滴神',
-                    downPath: '暂留，应该不需要的',
-                    siurceSuffix: 'pdf',
-                    downCount: '1000',
-                    updateTime: '2022-29-01',
-                    giveCount: '100'
-                }
-            ]
+            sources: []
         };
     },
     computed: {
@@ -59,12 +38,12 @@ export default {
             let latelys = JSON.parse(JSON.stringify(this.articles));
             if (latelys.length > 0) {
                 // 按阅读量排序
-                for(let i = 0; i < latelys.length; i++){
-                    for(let j = 0; j < latelys.length - i - 1; j++){
-                        if(latelys[j].readCount < latelys[j + 1].readCount){
+                for (let i = 0; i < latelys.length; i++) {
+                    for (let j = 0; j < latelys.length - i - 1; j++) {
+                        if (latelys[j].readCount < latelys[j + 1].readCount) {
                             const temp = latelys[j];
-                            latelys[j] = latelys[j+1];
-                            latelys[j+1] = temp;
+                            latelys[j] = latelys[j + 1];
+                            latelys[j + 1] = temp;
                         }
                     }
                 }
@@ -72,8 +51,9 @@ export default {
             return latelys;
         },
         getColletions() {
+            // 获取用户收藏列表待完善
             let collections = [];
-            if (this.articles.length > 0) {
+            if (this.articles.length > 5) {
                 collections.push(this.articles[3]);
                 collections.push(this.articles[4]);
                 collections.push(this.articles[2]);
@@ -108,11 +88,18 @@ export default {
             }
             this.$http.post('article/miniList', dto).then(res => {
                 this.articles = res.data.records.records;
+                this.childFlag = true;
+            })
+        },
+        setSources() {
+            this.$http.get('/material/myMaterial/' + this.$store.getters['user/getUser'].userName + '/0').then(res => {
+                this.sources = res.data.records;
             })
         }
     },
     created() {
         this.setArticles();
+        this.setSources();
     }
 };
 </script>
