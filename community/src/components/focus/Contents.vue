@@ -7,7 +7,7 @@
                     <ArticleList :articles="articles"></ArticleList>
                 </el-tab-pane>
                 <el-tab-pane label="资源" name="second">
-                    <!-- <ArticleList :articles="getHots"></ArticleList> -->
+                    <Sources :sources="sources"></Sources>
                 </el-tab-pane>
             </el-tabs>
         </el-col>
@@ -21,41 +21,106 @@
 <script>
 import { mapGetters } from 'vuex'
 import ArticleList from '@/components/user/ArticleList.vue'
+import Sources from '@/components/user/Sources.vue'
 export default {
+    created() {
+        this.searchVal = this.$route.query.searchVal;
+    },
     data() {
         return {
             activeName: 'first',
             checkedTags: [],
-            articles: []
+            articles: [],
+            sources: [],
+            searchVal: ''
         }
     },
     components: {
-        ArticleList
+        ArticleList,
+        Sources
     },
     computed: {
-        ...mapGetters('focus', ['getCheckedTags'])
+        ...mapGetters('focus', ['getCheckedTags']),
+        getSearchVal() {
+            return this.$route.query.searchVal;
+        }
     },
     watch: {
         'getCheckedTags': {
             handler(val) {
-                this.checkedTags = val
-                this.articles = []
-                for (let i = 0; i < this.checkedTags.length; i++) {
-                    let dto = {
-                        current: 1,
-                        size: 30,
-                        flag: '0',
-                        articleLabels: this.checkedTags[i]
+                this.checkedTags = val;
+                let dto = {
+                    current: 1,
+                    size: 1000,
+                    queryParam: {
+                        labelForSearch: this.checkedTags,
+                        articleContent: this.searchVal
                     }
-                    this.$http.post('article/miniList', dto).then(res => {
-                        this.articles = this.articles.concat(res.data.records.records);
-                    })
                 }
-
+                // 设置文章
+                this.$http.post('/article/search', dto).then(res => {
+                    if (res.data.code === 2000) {
+                        this.articles = res.data.records.records;
+                    }
+                })
+                // 设置资源
+                let maDto = {
+                    current: 1,
+                    size: 1000,
+                    queryParam: {
+                        flag: '0',
+                        descr: this.searchVal
+                    }
+                }
+                this.$http.post('/material/list', maDto).then(res => {
+                    if (res.data.code === 2000) {
+                        this.sources = res.data.records.records;
+                    }
+                })
 
             },
             deep: true,
             immediate: true
+        },
+        'getSearchVal': {
+            handler(val) {
+                this.searchVal = val;
+                // console.log(this.searchVal);
+                let dto = {
+                    current: 1,
+                    size: 1000,
+                    queryParam: {
+                        labelForSearch: this.checkedTags,
+                        articleContent: this.searchVal
+                    }
+                }
+                // 设置文章
+                this.$http.post('/article/search', dto).then(res => {
+                    if (res.data.code === 2000) {
+                        this.articles = res.data.records.records;
+                    }
+                })
+                // 设置资源
+                let maDto = {
+                    current: 1,
+                    size: 1000,
+                    queryParam: {
+                        flag: '0',
+                        descr: this.searchVal
+                    }
+                }
+                this.$http.post('/material/list', maDto).then(res => {
+                    if (res.data.code === 2000) {
+                        this.sources = res.data.records.records;
+                    }
+                })
+
+            },
+            deep: true,
+            immediate: true
+        },
+        activeName(val){
+            this.$store.commit('focus/setActiveName',val);
         }
     }
 }

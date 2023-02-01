@@ -11,7 +11,10 @@
                             <el-input type="text" readonly="" v-model="title" show-word-limit>
                             </el-input>
                         </el-col>
-                        <el-col :span="7">
+                        <el-col :span="1">
+                            <el-button v-if="delFlag == true" size="mini" round @click="remove">删除</el-button>
+                        </el-col>
+                        <el-col :span="6">
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
                         </el-col>
                         <el-col :span="8">
@@ -116,7 +119,8 @@ export default {
             collect: {
                 id: ' ',
                 flag: false,
-            }
+            },
+            delFlag: false
         }
     },
     components: {
@@ -148,6 +152,9 @@ export default {
                     this.value = res.data.records.articleContent;
                     this.userId = res.data.records.userId;
                     this.articleId = res.data.records.id;
+                    if(res.data.records.createBy == this.$store.getters['user/getUser'].userName){
+                        this.delFlag = true
+                    }
                     // 标签id
                     let labelIds = res.data.records.articleLabels.split(',');
                     labelIds.splice(0, 1);
@@ -230,6 +237,17 @@ export default {
         readPlus(id) {
             // 阅读量加一
             this.$http.get('/article/readPlusOne/' + id);
+        },
+        remove(){
+            this.$http.get('/article/remove/' + this.$route.query.id).then(res => {
+                if(res.data.code === 2000){
+                    this.$notify.success({
+                        message: res.data.msg,
+                        offset: 70
+                    })
+                    this.$router.go(-1);
+                }
+            })
         }
     },
     created() {

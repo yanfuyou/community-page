@@ -24,7 +24,6 @@
                         <el-breadcrumb-item>阅读量{{ article.readCount }}</el-breadcrumb-item>
                         <el-breadcrumb-item>得分{{ article.scoreCount }}</el-breadcrumb-item>
                         <el-breadcrumb-item>评论数{{ article.commCount }}</el-breadcrumb-item>
-                        <el-breadcrumb-item><el-button size="mini" round>删除</el-button></el-breadcrumb-item>
                     </el-breadcrumb>
                     <el-divider></el-divider>
                 </el-col>

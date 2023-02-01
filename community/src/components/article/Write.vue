@@ -57,6 +57,7 @@ export default {
                 fileName: '',
                 visitPath: ''
             },
+            enclFlag: '0',
             sysLabels: [],
             labels: [],
             cover: '',
@@ -126,16 +127,16 @@ export default {
         },
         handleUploadFile(params) {
             const _file = params.file;
-            const isLt2M = _file.size / 1024 / 1024 < 2;
+            const isLt2M = _file.size / 1024 / 1024 < 200;
 
             if (_file) {
                 let param = new FormData();
                 param.append('files', _file);
                 param.append('bizType', "enclosure");
                 param.append('articleId', this.id);
-                console.log(param.get('articleId'));
+                // console.log(param.get('articleId'));
                 if (!isLt2M) {
-                    that.$message.error('请上传2M以下的图片文件(*.png/*.jpg/*.jpeg)')
+                    that.$message.error('请上传20M以下的文件')
                     return false
                 }
 
@@ -147,6 +148,11 @@ export default {
         handleChange(file, fileList) {
             fileList.length = 0;
             fileList.push(file);
+            if(fileList.length != 0){
+                this.enclFlag = '1'
+            }else{
+                this.enclFlag = '0'
+            }
             this.encl.fileName = fileList[0].name;
         },
         release() {
@@ -170,12 +176,13 @@ export default {
                 aLabels += "," + lab;
             })
             this.id = nanoid(30);
+            console.log('附件' + this.enclFlag);
             let articleInfo = {
                 id: this.id,
                 articleName: this.title,
                 articleContent: this.value,
                 articleLabels: aLabels,
-                enclosure: this.encl.fileName == '' ? '0' : '1'
+                enclosure: this.enclFlag
             }
             this.submitUpload();
             if (this.cover != '') {
@@ -185,10 +192,18 @@ export default {
                 }
                 this.$http.post('/article/addCover', articleCover)
             }
-            this.$http.post('/article/release', articleInfo);
+            this.$http.post('/article/release', articleInfo).then(res => {
+                if(res.data.code === 2000){
+                    this.$message.success({
+                        message: '发布成功',
+                        offset: 70
+                    })
+                    this.$router.go(-1);
+                }
+            });
         }
     },
-    mounted() {
+    created() {
         let labels = [];
         let dto = {
             flag: '0'

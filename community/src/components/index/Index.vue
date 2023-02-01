@@ -40,7 +40,7 @@
                     </el-tab-pane>
                     <el-tab-pane label="高效" name="third">
                         <!-- 资料内容 -->
-                        <Sources></Sources>
+                        <Sources :sources="sources"></Sources>
                     </el-tab-pane>
                     <el-tab-pane label="平台推荐" name="fourth">
                         <ArticleList></ArticleList>
@@ -77,7 +77,8 @@ export default {
         return {
             activeName: 'first',
             articles: [],
-            hots: []
+            hots: [],
+            sources: []
         }
     },
     components: {
@@ -123,10 +124,31 @@ export default {
             this.$http.post('article/miniList', dto).then(res => {
                 this.articles = res.data.records.records;
             })
+        },
+        setSources(){
+            let maDto = {
+                current: 1,
+                size:1000,
+                orders: [
+                    {
+                        asc: true,
+                        column: 'DOWNLOAD_NUM' 
+                    }
+                ],
+                queryParam: {
+                    flag: '0'
+                }
+            }
+            this.$http.post('/material/list',maDto).then(res => {
+                if(res.data.code === 2000){
+                    this.sources = res.data.records.records;
+                }
+            })
         }
     },
     created() {
         this.setArticles();
+        this.setSources();
     }
 }
 </script>

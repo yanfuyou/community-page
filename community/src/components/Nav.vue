@@ -7,22 +7,22 @@
         </el-menu-item>
         <el-menu-item index="1" @click="dump('/index')">首页</el-menu-item>
         <el-menu-item index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
-        <el-menu-item index="3">兴趣</el-menu-item>
-        <el-submenu index="4">
+        <!-- <el-menu-item index="3">兴趣</el-menu-item> -->
+        <!-- <el-submenu index="4">
           <template slot="title">学习</template>
           <el-menu-item index="4-1">文学</el-menu-item>
           <el-menu-item index="4-2">理学</el-menu-item>
           <el-menu-item index="4-3">工学</el-menu-item>
-        </el-submenu>
+        </el-submenu> -->
         <el-menu-item index="5" @click="dump('/hole/tree')">嗨！树洞</el-menu-item>
         <el-menu-item id="search">
           <el-input placeholder="请输入内容" v-model="searchVal" class="input-with-select">
-            <el-select style="width:150px;" v-model="type" slot="prepend" placeholder="请选择">
+            <!-- <el-select style="width:150px;" v-model="type" slot="prepend" placeholder="请选择">
               <el-option label="全部" value="1"></el-option>
               <el-option label="餐厅名" value="2"></el-option>
               <el-option label="订单号" value="3"></el-option>
               <el-option label="用户电话" value="4"></el-option>
-            </el-select>
+            </el-select> -->
             <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
           </el-input>
         </el-menu-item>
@@ -37,12 +37,12 @@
                 <el-avatar :src="getUser.userAvatar"></el-avatar>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <el-badge :value="2" class="item" type="warning">
+                <!-- <el-badge :value="2" class="item" type="warning">
                   <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item>
-                </el-badge>
+                </el-badge> -->
                 <el-dropdown-item icon="el-icon-bell"
                   @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
-                <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item>
+                <!-- <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item> -->
                 <el-dropdown-item icon="el-icon-setting" @click.native="dump('/user/setting')">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
@@ -78,10 +78,15 @@ export default {
   },
   methods: {
     handleSelect(key, keyPath) {
-      console.log(key, keyPath);
+      // console.log(key, keyPath);
     },
     search() {
-      console.log("类别：", this.type, "值：", this.searchVal)
+      // console.log( this.searchVal)
+
+      this.$router.push({
+        path: '/focus/focusPage',
+        query: {searchVal: this.searchVal}
+      });
     },
     dump(path) {
       this.$router.push(path);

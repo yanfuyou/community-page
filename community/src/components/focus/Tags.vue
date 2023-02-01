@@ -1,12 +1,13 @@
 <template>
     <el-collapse class="tags" v-model="activeNames">
-        <el-collapse-item title="请选择主题标签" name="1">
+        <el-collapse-item title="可选主题标签" name="1">
             <!-- 需要阻止tag的默认行为 -->
             <el-checkbox v-for="tag in systemTags" :key="tag.id" @click.native="addCheck($event,tag.id)"><el-tag :type="tag.labelType">{{ tag.labelName }}</el-tag></el-checkbox>
         </el-collapse-item>
     </el-collapse>
 </template>
 <script>
+import { mapGetters } from 'vuex'
 export default {
     data() {
         return {
@@ -14,6 +15,9 @@ export default {
             systemTags: [],
             myCheck: []
         }
+    },
+    computed: {
+        ...mapGetters('focus',['getActiveName'])
     },
     methods: {
         setTags() {
@@ -41,6 +45,21 @@ export default {
     },
     created() {
         this.setTags();
+    },
+    watch:{
+        'getActiveName': {
+            // 控制标签折叠
+            handler(val){
+                if(val == 'second'){
+                    this.activeNames = []
+                }else{
+                    this.activeNames = ['1']
+                }
+                // console.log(this.activeNames);
+            },
+            deep: true,
+            immediate: true
+        }
     }
 }
 </script>

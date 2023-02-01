@@ -15,7 +15,7 @@
         </el-tab-pane>
         <el-tab-pane label="收藏" name="five">
             <!-- 截取一部分文章 -->
-            <ArticleList :articles="getColletions"></ArticleList>
+            <ArticleList :articles="collects"></ArticleList>
         </el-tab-pane>
     </el-tabs>
 </template>
@@ -29,7 +29,8 @@ export default {
         return {
             activeName: 'second',
             articles: [],
-            sources: []
+            sources: [],
+            collects: []
         };
     },
     computed: {
@@ -49,16 +50,6 @@ export default {
                 }
             }
             return latelys;
-        },
-        getColletions() {
-            // 获取用户收藏列表待完善
-            let collections = [];
-            if (this.articles.length > 5) {
-                collections.push(this.articles[3]);
-                collections.push(this.articles[4]);
-                collections.push(this.articles[2]);
-            }
-            return collections;
         },
         getArticles() {
             return this.articles;
@@ -95,11 +86,27 @@ export default {
             this.$http.get('/material/myMaterial/' + this.$store.getters['user/getUser'].userName + '/0').then(res => {
                 this.sources = res.data.records;
             })
+        },
+        setCollects(){
+            let dto = {
+                current: 1,
+                size: 1000,
+                queryParam: {
+                    userId: this.$route.query.id,
+                    flag: '0'
+                }
+            }
+            this.$http.post('/collect/page',dto).then(res => {
+                if(res.data.code === 2000){
+                    this.collects = res.data.records.records;
+                }
+            })
         }
     },
     created() {
         this.setArticles();
         this.setSources();
+        this.setCollects();
     }
 };
 </script>

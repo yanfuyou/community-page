@@ -20,13 +20,13 @@
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <el-breadcrumb separator="|" style="color:#2b426e !important;">
+                            <!-- <el-breadcrumb separator="|" style="color:#2b426e !important;">
                                 <el-breadcrumb-item>文章数：{{user.report.artSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>资料数：</el-breadcrumb-item>
                                 <el-breadcrumb-item>总访问量：{{user.report.readSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>排名：</el-breadcrumb-item>
                                 <el-breadcrumb-item>收藏数：{{user.report.followSum | scoreFilter}}</el-breadcrumb-item>
-                            </el-breadcrumb>
+                            </el-breadcrumb> -->
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
                                     class="el-icon-microphone"></i><span>{{user.baseInfo.userSign}}</span>
@@ -153,11 +153,11 @@ export default {
             })
         },
         setReport(){
-            this.$http.get('/userArt/getReport/' + this.$route.query.id).then(res => {
-                if(res.data.code === 2000){
-                    this.user.report = res.data.records;
-                }
-            })
+            // this.$http.get('/userArt/getReport/' + this.$route.query.id).then(res => {
+            //     if(res.data.code === 2000){
+            //         this.user.report = res.data.records;
+            //     }
+            // })
         },
         setUserScore(){
             this.$http.post('/user/score?userId=' + this.$route.query.id).then(res => {
