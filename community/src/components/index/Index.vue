@@ -27,6 +27,11 @@
             </el-col>
             <el-col :span="6" class="one">
                 <!-- <div class="grid-content bg-purple">广告</div> -->
+                <el-carousel height="250px">
+                    <el-carousel-item>
+                        <video height="250px" controls object-fit="contain" src="http://localhost:8081/community/upload/2023-02-01-234643.webm"></video>
+                    </el-carousel-item>
+                </el-carousel>
             </el-col>
         </el-row>
         <el-row :gutter="20">
@@ -125,22 +130,22 @@ export default {
                 this.articles = res.data.records.records;
             })
         },
-        setSources(){
+        setSources() {
             let maDto = {
                 current: 1,
-                size:1000,
+                size: 1000,
                 orders: [
                     {
                         asc: true,
-                        column: 'DOWNLOAD_NUM' 
+                        column: 'DOWNLOAD_NUM'
                     }
                 ],
                 queryParam: {
                     flag: '0'
                 }
             }
-            this.$http.post('/material/list',maDto).then(res => {
-                if(res.data.code === 2000){
+            this.$http.post('/material/list', maDto).then(res => {
+                if (res.data.code === 2000) {
                     this.sources = res.data.records.records;
                 }
             })
@@ -210,4 +215,3 @@ export default {
     background: none;
 }
 </style>
-  
