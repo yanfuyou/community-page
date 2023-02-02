@@ -13,6 +13,7 @@
         </el-col>
         <el-col :span="6">
             <div class="grid-content bg-purple">有朋自远方来！</div>
+            <UserList :users="users"></UserList>
         </el-col>
     </el-row>
 
@@ -22,9 +23,33 @@
 import { mapGetters } from 'vuex'
 import ArticleList from '@/components/user/ArticleList.vue'
 import Sources from '@/components/user/Sources.vue'
+import UserList from '@/components/index/UserList.vue'
 export default {
     created() {
         this.searchVal = this.$route.query.searchVal;
+        this.setUsers();
+    },
+    methods: {
+        setUsers() {
+            let dto = {
+                current: 1,
+                orders: [
+                    {
+                        asc: false,
+                        column: "articleCount"
+                    }
+                ],
+                queryParam: {
+                    flag: 0
+                },
+                size: 10
+            }
+            this.$http.post('/user/userMini',dto).then(res => {
+                if(res.data.code === 2000){
+                    this.users = res.data.records.records;
+                }
+            })
+        }
     },
     data() {
         return {
@@ -32,12 +57,14 @@ export default {
             checkedTags: [],
             articles: [],
             sources: [],
-            searchVal: ''
+            searchVal: '',
+            users: []
         }
     },
     components: {
         ArticleList,
-        Sources
+        Sources,
+        UserList
     },
     computed: {
         ...mapGetters('focus', ['getCheckedTags']),
@@ -119,8 +146,8 @@ export default {
             deep: true,
             immediate: true
         },
-        activeName(val){
-            this.$store.commit('focus/setActiveName',val);
+        activeName(val) {
+            this.$store.commit('focus/setActiveName', val);
         }
     }
 }

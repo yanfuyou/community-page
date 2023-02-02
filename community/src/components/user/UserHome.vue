@@ -11,25 +11,25 @@
                     <el-row id="user-main">
                         <el-col :span="24">
                             <div id="name">
-                                <span>{{user.baseInfo.userAlias}}</span>
-                                <i class="el-icon-time">{{getTime}}</i>
-                                <i style="float:right;margin-right:80px;" class="el-icon-setting" title="设置"
-                                    @click="dump('/user/setting')">设置</i>
+                                <span>{{ user.baseInfo.userAlias }}</span>
+                                <i class="el-icon-time">{{ getTime }}</i>
+                                <i v-if="theUserId == getUser.id" style="float:right;margin-right:80px;"
+                                    class="el-icon-setting" title="设置" @click="dump('/user/setting')">设置</i>
                             </div>
                         </el-col>
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <!-- <el-breadcrumb separator="|" style="color:#2b426e !important;">
+                            <el-breadcrumb separator="|" style="color:#2b426e !important;">
                                 <el-breadcrumb-item>文章数：{{user.report.artSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>资料数：</el-breadcrumb-item>
                                 <el-breadcrumb-item>总访问量：{{user.report.readSum | scoreFilter}}</el-breadcrumb-item>
                                 <el-breadcrumb-item>排名：</el-breadcrumb-item>
                                 <el-breadcrumb-item>收藏数：{{user.report.followSum | scoreFilter}}</el-breadcrumb-item>
-                            </el-breadcrumb> -->
+                            </el-breadcrumb>
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
-                                    class="el-icon-microphone"></i><span>{{user.baseInfo.userSign}}</span>
+                                    class="el-icon-microphone"></i><span>{{ user.baseInfo.userSign | signFilter}}</span>
                             </div>
                         </el-col>
                     </el-row>
@@ -41,15 +41,22 @@
                         <el-row class="left fra">
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
-                                    <el-button type="success" plain size="mini">全部：{{user.score.all | scoreFilter}}分</el-button>
-                                    <el-button type="warning" plain size="mini">当月：{{user.score.thisMonth | scoreFilter}}分</el-button>
+                                    <el-button type="success" plain size="mini">全部：{{
+                                        user.score.all |
+                                            scoreFilter
+                                    }}分</el-button>
+                                    <el-button type="warning" plain size="mini">当月：{{
+                                        user.score.thisMonth |
+                                            scoreFilter
+                                    }}分</el-button>
                                 </div>
                             </el-col>
                         </el-row>
                         <el-row class="left">
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
-                                    <el-tag v-for="(tag,index) in user.tags" :key="index" :type="tag.labelType">{{tag.labelName}}</el-tag>
+                                    <el-tag v-for="(tag, index) in user.tags" :key="index"
+                                        :type="tag.labelType">{{ tag.labelName }}</el-tag>
                                     <!-- <el-tag type="success">标签二</el-tag>
                                     <el-tag type="info">标签三</el-tag>
                                     <el-tag type="warning">标签四</el-tag>
@@ -57,13 +64,14 @@
                                 </div>
                             </el-col>
                         </el-row>
-                        <el-row class="left">
+                        <!-- 原本准备引入文章 -->
+                        <!-- <el-row class="left">
                             <el-col :span="24">
                                 <div class="grid-content bg-purple-dark">
                                     <Deg :articles="degArticles"></Deg>
                                 </div>
                             </el-col>
-                        </el-row>
+                        </el-row> -->
                     </el-aside>
                     <el-container>
                         <MyArticle></MyArticle>
@@ -88,7 +96,7 @@ export default {
             },
             user: {
                 baseInfo: {},
-                report:{},
+                report: {},
                 score: {},
                 tags: {}
             }
@@ -99,13 +107,16 @@ export default {
         Deg
     },
     computed: {
-        ...mapGetters('user',['getUser']),
-        getTime(){
+        ...mapGetters('user', ['getUser']),
+        getTime() {
             let create = this.user.baseInfo.createTime + '';
-            let year = create.substring(0,4);
-            let month = create.substring(4,6);
-            let day = create.substring(6,8);
+            let year = create.substring(0, 4);
+            let month = create.substring(4, 6);
+            let day = create.substring(6, 8);
             return year + '/' + month + '/' + day;
+        },
+        theUserId() {
+            return this.$route.query.id;
         },
         degArticles() {
             let articles = [
@@ -145,43 +156,49 @@ export default {
         dump(path) {
             this.$router.push(path);
         },
-        setBasic(){
+        setBasic() {
             this.$http.get('/user/' + this.$route.query.id).then(res => {
-                if(res.data.code === 2000){
+                if (res.data.code === 2000) {
                     this.user.baseInfo = res.data.records;
                 }
             })
         },
-        setReport(){
-            // this.$http.get('/userArt/getReport/' + this.$route.query.id).then(res => {
-            //     if(res.data.code === 2000){
-            //         this.user.report = res.data.records;
-            //     }
-            // })
+        setReport() {
+            this.$http.get('/userArt/getReport/' + this.$route.query.id).then(res => {
+                if(res.data.code === 2000){
+                    this.user.report = res.data.records;
+                }
+            })
         },
-        setUserScore(){
+        setUserScore() {
             this.$http.post('/user/score?userId=' + this.$route.query.id).then(res => {
                 let score = res.data.records;
                 this.user.score.all = score.all;
                 this.user.score.thisMOnth = score.thisMonth;
             })
         },
-        setTags(){
+        setTags() {
             this.$http.get('/user/getUserLabels/' + this.$route.query.id).then(res => {
                 this.user.tags = res.data.records;
             })
         }
     },
-    filters:{
-      scoreFilter(val){
-        if(val){
+    filters: {
+        scoreFilter(val) {
+            if (val) {
+                return val;
+            } else {
+                return 0;
+            }
+        },
+        signFilter(val){
+            if(!val || val == ''){
+                return '暂无签名。。。'
+            }
             return val;
-        }else{
-            return 0;
         }
-      }  
     },
-    mounted(){
+    created() {
         this.setBasic();
         this.setReport();
         this.setUserScore();

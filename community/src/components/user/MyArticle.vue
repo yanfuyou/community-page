@@ -83,11 +83,17 @@ export default {
             })
         },
         setSources() {
-            this.$http.get('/material/myMaterial/' + this.$store.getters['user/getUser'].userName + '/0').then(res => {
-                this.sources = res.data.records;
+            // 获取用户名
+            this.$http.get('/user/' + this.$route.query.id).then(userRes => {
+                if (userRes.data.code === 2000) {
+                    this.$http.get('/material/myMaterial/' + userRes.data.records.id + '/0').then(res => {
+                        this.sources = res.data.records;
+                    })
+                }
             })
+
         },
-        setCollects(){
+        setCollects() {
             let dto = {
                 current: 1,
                 size: 1000,
@@ -96,8 +102,8 @@ export default {
                     flag: '0'
                 }
             }
-            this.$http.post('/collect/page',dto).then(res => {
-                if(res.data.code === 2000){
+            this.$http.post('/collect/page', dto).then(res => {
+                if (res.data.code === 2000) {
                     this.collects = res.data.records.records;
                 }
             })

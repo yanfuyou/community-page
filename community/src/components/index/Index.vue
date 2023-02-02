@@ -23,13 +23,13 @@
                 <Hot></Hot>
             </el-col>
             <el-col :span="5" class="one">
-                <HeadLine></HeadLine>
+                <HeadLine :head-mas="headMas"></HeadLine>
             </el-col>
             <el-col :span="6" class="one">
                 <!-- <div class="grid-content bg-purple">广告</div> -->
                 <el-carousel height="250px">
-                    <el-carousel-item>
-                        <video height="250px" controls object-fit="contain" src="http://localhost:8081/community/upload/2023-02-01-234643.webm"></video>
+                    <el-carousel-item v-for="(video, index) in videos" :key="index">
+                        <video height="250px" controls object-fit="contain" :src="video.visitPath"></video>
                     </el-carousel-item>
                 </el-carousel>
             </el-col>
@@ -60,7 +60,11 @@
                 </div>
             </el-col>
             <el-col :span="5">
-                <div class="grid-content bg-purple"></div>
+                <div class="grid-content bg-purple">
+                    <i class="el-icon-user type"><span>活跃用户</span></i>
+                    <!-- 导入用户信息 -->
+                    <UserList :users="users"></UserList>
+                </div>
             </el-col>
         </el-row>
     </div>
@@ -76,14 +80,20 @@ import HeadLine from './HeadLIne.vue'
 import ArticleList from '@/components/user/ArticleList'
 // 资料列表
 import Sources from '@/components/user/Sources'
+// 队伍列表
 import TeamList from '@/components/team/TeamList.vue'
+// 用户列表
+import UserList from '@/components/index/UserList.vue'
 export default {
     data() {
         return {
             activeName: 'first',
             articles: [],
             hots: [],
-            sources: []
+            sources: [],
+            users: [],
+            videos: [],
+            headMas: []
         }
     },
     components: {
@@ -92,7 +102,8 @@ export default {
         HeadLine,
         ArticleList,
         Sources,
-        TeamList
+        TeamList,
+        UserList
     },
     computed: {
         getHots() {
@@ -149,11 +160,76 @@ export default {
                     this.sources = res.data.records.records;
                 }
             })
+        },
+        setUsers() {
+            let dto = {
+                current: 1,
+                orders: [
+                    {
+                        asc: false,
+                        column: "commentCount"
+                    }
+                ],
+                queryParam: {
+                    flag: 0
+                },
+                size: 10
+            }
+            this.$http.post('/user/userMini', dto).then(res => {
+                if (res.data.code === 2000) {
+                    this.users = res.data.records.records;
+                }
+            })
+        },
+        setVideos() {
+            let dto = {
+                current: 1,
+                size: 5,
+                orders: [
+                    {
+                        asc: true,
+                        column: 'CREATE_TIME'
+                    }
+                ],
+                queryParam: {
+                    flag: '0',
+                    bizType: 'video'
+                }
+            }
+            this.$http.post('/file/videoList', dto).then(res => {
+                if(res.data.code === 2000){
+                    this.videos = res.data.records.records;
+                }
+            })
+        },
+        setHeadMas(){
+            let dto = {
+                current: 1,
+                size: 4,
+                orders: [
+                    {
+                        asc: true,
+                        column: 'CREATE_TIME'
+                    }
+                ],
+                queryParam: {
+                    flag: '0'
+                }
+            }
+            this.$http.post('/material/list',dto).then(res => {
+                // console.log(res.data);
+                if(res.data.code === 2000){
+                    this.headMas = res.data.records.records;
+                }
+            })
         }
     },
     created() {
         this.setArticles();
         this.setSources();
+        this.setUsers();
+        this.setVideos();
+        this.setHeadMas();
     }
 }
 </script>

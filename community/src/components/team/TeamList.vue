@@ -1,5 +1,6 @@
 <template>
     <div>
+        <el-empty :image-size="200" v-if="teamList.length == 0"></el-empty>
         <el-collapse>
             <el-collapse-item v-model="activeName" accordion v-for="(team, index) in teamList" :key="index"
                 :title="team.name" :name="index">

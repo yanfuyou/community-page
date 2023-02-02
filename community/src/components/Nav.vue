@@ -43,7 +43,7 @@
                 <el-dropdown-item icon="el-icon-bell"
                   @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
                 <!-- <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item> -->
-                <el-dropdown-item icon="el-icon-setting" @click.native="dump('/user/setting')">设置</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-setting" native="dump('/user/setting')">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
