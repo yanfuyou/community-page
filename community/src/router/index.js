@@ -126,7 +126,8 @@ VueRouter.prototype.push = function push(location) {
 }
 
 const router = new VueRouter({
-    routes
+    routes,
+    mode: 'history'
 })
 // 路由守卫
 router.beforeEach((to, from, next) => {
