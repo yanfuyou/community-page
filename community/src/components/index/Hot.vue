@@ -29,7 +29,7 @@ export default {
         }
     },
     mounted() {
-        this.$http.get('/article/getHots/0/4').then(res => {
+        this.$http.get('/article/getHots/0/2').then(res => {
             if (res.data.code === 2000) {
                 // console.log(res.data.records);
                 this.$store.commit('homePage/setHots', res.data.records)

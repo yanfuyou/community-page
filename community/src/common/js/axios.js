@@ -8,6 +8,7 @@ export default {
     install: function (vue) {
         // 创建一个axios
         let result = axios.create({
+            // baseURL: 'http://fuyou.free.idcfengye.com/community'
             baseURL: 'http://192.168.3.7:8081/community'
         })
         result.interceptors.request.use(
