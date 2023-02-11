@@ -10,7 +10,7 @@
             <el-input type="password" v-model="user.userPassword"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="rePassword">
-            <el-input type="password" v-model="user.rePassword"></el-input>
+            <el-input type="password" v-model="user.rePassword" @keyup.enter.native="submitForm(user)"></el-input>
         </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submitForm(user)">注册</el-button>
@@ -55,21 +55,18 @@ export default {
     },
     methods: {
         submitForm(user) {
-            console.log(user);
-            if (user.userName == '' || user.userPassword == '') {
-                this.$notify.error({
-                    message: '请检查输入信息'
+            if (user.userName == '' || user.userPassword == '' || user.rePassword == '') {
+                this.$message.error({
+                    message: '请检查输入信息',
+                    offset: 70
                 })
+                return false
             }
             this.$http.post('user/signup', user).then(res => {
                 if (res.data.code == 2000) {
-                    console.log(res);
-                    this.$notify.success({
-                        message: res.data.msg
-                    })
-                } else {
-                    this.$notify.error({
-                        message: res.data.msg
+                    this.$message.success({
+                        message: res.data.msg,
+                        offset: 70
                     })
                 }
             }).catch(error => {

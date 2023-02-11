@@ -6,7 +6,7 @@
         <el-form-item label="密码" prop="userPassword">
             <el-input type="password" v-model="user.userPassword"></el-input>
         </el-form-item>
-        <el-form-item label="验证码" prop="verification" id="verification">
+        <el-form-item label="验证码" prop="verification" id="verification" @keyup.enter.native="submitForm(user)">
             <el-row>
                 <el-col :span="12">
                     <el-input id="codeIn" v-model="user.verification"></el-input>
@@ -75,11 +75,6 @@ export default {
                         message: res.data.msg,
                         offset: 70
                     })
-                } else {
-                    this.$notify.error({
-                        message: res.data.msg,
-                        offset: 70
-                    })
                 }
             }).catch(error => {
                 this.$notify.error({
@@ -100,7 +95,7 @@ export default {
             })
         }
     },
-    mounted() {
+    created() {
         // 设置验证码
         this.$http.get('code/num').then(res => {
             this.codeNum = res.data.records.codeNum;
