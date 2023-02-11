@@ -5,24 +5,11 @@
         <el-menu-item id="tag" index="0">
           <el-button class="button-new-tag" size="small" @click="dump('/index')">交流社区</el-button>
         </el-menu-item>
-        <el-menu-item index="1" @click="dump('/index')">首页</el-menu-item>
-        <el-menu-item index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
-        <!-- <el-menu-item index="3">兴趣</el-menu-item> -->
-        <!-- <el-submenu index="4">
-          <template slot="title">学习</template>
-          <el-menu-item index="4-1">文学</el-menu-item>
-          <el-menu-item index="4-2">理学</el-menu-item>
-          <el-menu-item index="4-3">工学</el-menu-item>
-        </el-submenu> -->
-        <el-menu-item index="5" @click="dump('/hole/tree')">嗨！树洞</el-menu-item>
+        <el-menu-item v-if="handlePermission('/index')" index="1" @click="dump('/index')">首页</el-menu-item>
+        <el-menu-item v-if="handlePermission('/focus/focusPage')" index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
+        <el-menu-item v-if="handlePermission('/hole/tree')" index="5" @click="dump('/hole/tree')">嗨！树洞</el-menu-item>
         <el-menu-item id="search">
           <el-input placeholder="请输入内容" v-model="searchVal" class="input-with-select">
-            <!-- <el-select style="width:150px;" v-model="type" slot="prepend" placeholder="请选择">
-              <el-option label="全部" value="1"></el-option>
-              <el-option label="餐厅名" value="2"></el-option>
-              <el-option label="订单号" value="3"></el-option>
-              <el-option label="用户电话" value="4"></el-option>
-            </el-select> -->
             <el-button slot="append" icon="el-icon-search" @click="search"></el-button>
           </el-input>
         </el-menu-item>
@@ -37,19 +24,15 @@
                 <el-avatar :src="getUser.userAvatar"></el-avatar>
               </span>
               <el-dropdown-menu slot="dropdown">
-                <!-- <el-badge :value="2" class="item" type="warning">
-                  <el-dropdown-item icon="el-icon-bell">消息</el-dropdown-item>
-                </el-badge> -->
-                <el-dropdown-item icon="el-icon-bell"
+                <el-dropdown-item icon="el-icon-bell" v-if="handlePermission('/user/userhome')"
                   @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
-                <!-- <el-dropdown-item icon="el-icon-circle-plus">收藏</el-dropdown-item> -->
-                <el-dropdown-item icon="el-icon-setting" native="dump('/user/setting')">设置</el-dropdown-item>
+                <el-dropdown-item v-if="handlePermission('/user/setting')" icon="el-icon-setting" native="dump('/user/setting')">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <i class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
-            <i class="el-icon-medal-1 write"><span @click="dump('/team/enlist')">找队员</span></i>
-            <i class="el-icon-receiving write"><span @click="dump('/material/upload')">传资料</span></i>
+            <i v-if="handlePermission('/article/write')" class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
+            <i v-if="handlePermission('/team/enlist')" class="el-icon-medal-1 write"><span @click="dump('/team/enlist')">找队员</span></i>
+            <i v-if="handlePermission('/material/upload')" class="el-icon-receiving write"><span @click="dump('/material/upload')">传资料</span></i>
           </div>
         </el-menu-item>
       </el-menu>
@@ -74,7 +57,7 @@ export default {
     };
   },
   computed: {
-    ...mapGetters('user', ['getUser'])
+    ...mapGetters('user', ['getUser','getPermissions'])
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -101,8 +84,16 @@ export default {
       this.$store.commit('user/setUser', user);
       window.localStorage.removeItem("Bearer");
       this.dump('/index');
+    },
+    handlePermission(path) {
+      // 页面权限判断
+      if(this.getPermissions && this.getPermissions.length > 0){
+        return this.getPermissions.includes(path)
+      }else{
+        return false
+      }
     }
-  },
+  }
 };
 </script>
 <!-- 原本没有scoped 因为.el-button--primary加的 -->

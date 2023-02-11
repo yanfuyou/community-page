@@ -6,12 +6,17 @@ const user = {
             userName: '',
             userAlias: '',
             userAvatar: 'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png',
-            loginFlag: false
+            loginFlag: false,
+            roles: [],
+            permissions: []
         }
     },
     getters:{
         getUser(state){
             return state.user;
+        },
+        getPermissions(state) {
+            return state.user.permissions;
         }
     },
     mutations: {

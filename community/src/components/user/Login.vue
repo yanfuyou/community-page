@@ -66,9 +66,27 @@ export default {
                         userName: res.data.records.userName,
                         userAlias: res.data.records.userAlias,
                         userAvatar: res.data.records.userAvatar,
-                        loginFlag: true
+                        loginFlag: true,
+                        roles: [],
+                        permissions: []
                     }
                     window.localStorage.setItem("Bearer", res.data.records.tokenId);
+                    this.$http.get('/user/getInfo').then(roleInfo => {
+                        const { roles, permission } = roleInfo.data.records
+                        user.roles = roles
+                        if (!roles || roles.length <= 0) {
+                            this.$message.error({
+                                message: '请等待初始化角色',
+                                offset: 70
+                            })
+                        } else {
+                            let permissions = []
+                            roles.forEach(role => {
+                              permissions = permissions.concat(permission[role])
+                            })
+                            user.permissions = permissions   
+                        }
+                    })
                     this.$store.commit('user/setUser', user);
                     this.$router.push('/index')
                     this.$notify.success({
