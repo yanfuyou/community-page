@@ -60,7 +60,7 @@ export default {
         },
         addToList() {
             let list = []
-            this.$http.post('/hole/page', { "current": 1, "size": 1000, "orders": [{ "column": 't.CREATE_TIME', "asc": false }], "queryParam": { "flag": 0, "pub": '1' } }).then(res => {
+            this.$http.post('/hole/page', { "current": 1, "size": 10000, "orders": [{ "column": 't.CREATE_TIME', "asc": false }], "queryParam": { "flag": 0, "pub": '1' } }).then(res => {
                 if (res.data.code === 2000) {
                     list = res.data.records.records
                     list.forEach((v) => {

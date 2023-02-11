@@ -1,7 +1,9 @@
 import Vue from "vue";
+import store from '@/store'
 import VueRouter from "vue-router";
 Vue.use(VueRouter)
 import Body from '../components/Body'
+import { Message } from 'element-ui'
 // 用户
 import Index from '../components/index/Index'
 import Login from '../components/user/Login'
@@ -132,6 +134,18 @@ const router = new VueRouter({
 })
 // 路由守卫
 router.beforeEach((to, from, next) => {
+
+    // 进行路由权限校验
+    const permissions = store.getters.getPermissions;
+    if(permissions && permissions.length > 0){
+        if(!permissions.includes(to.path)){
+            Message.error({
+                message: '权限异常',
+                offset: 70
+            })
+            next('/user/login')
+        }
+    }
     // 设置页面标题
     document.title = to.meta.title;
     // 放行
