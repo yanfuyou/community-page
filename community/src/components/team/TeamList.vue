@@ -42,6 +42,8 @@
                     </el-form-item>
                     <el-form-item size="large">
                         <el-button @click="signUp(team)">我要报名</el-button>
+                        <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报"
+                                                @click="handleAcc(team.id, 'team')"></i>
                     </el-form-item>
                 </el-form>
             </el-collapse-item>
@@ -72,9 +74,29 @@
                 </div>
             </el-drawer>
         </div>
+        <el-drawer title="举报!" :before-close="doAcc" :visible.sync="accDialog" direction="rtl"
+            custom-class="demo-drawer" ref="drawer">
+            <div class="demo-drawer__content">
+                <el-form :model="temp">
+                    <el-form-item label="理由" label-width="80px">
+                        <el-input type="textarea" :rows="3" v-model="temp.reason"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div class="demo-drawer__footer">
+                    <el-button @click="accDialog = false">取 消</el-button>
+                    <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{
+                        loading?
+                    '提交中 ...'
+                            : '确 定'
+                    }}</el-button>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 </template>
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
     data() {
         return {
@@ -94,7 +116,17 @@ export default {
                 userId: ''
             },
             formLabelWidth: '80px',
+            accDialog: false,
+            temp: {
+                relId: null,
+                reason: null,
+                bizType: null
+            },
+            loading: false
         };
+    },
+    computed: {
+        ...mapGetters('user', ['getUser'])
     },
     methods: {
         signUp(team) {
@@ -145,6 +177,36 @@ export default {
             }).catch(err => {
                 console.log(err);
             })
+        },
+        handleAcc(relId, bizType) {
+            this.temp.relId = null
+            this.temp.reason = null
+            this.temp.bizType = null
+            this.temp.relId = relId
+            this.temp.bizType = bizType
+            this.accDialog = true
+        },
+        doAcc() {
+            if (this.loading) {
+                return;
+            }
+            this.$confirm('确定要举报吗？')
+                .then(_ => {
+                    this.loading = true;
+                    this.$http.post('/accusation/add', this.temp).then(res => {
+                        if (res.data.code === 2000) {
+                            this.$message.success({
+                                message: res.data.msg,
+                                offset: 70
+                            })
+                            this.loading = false;
+                            this.accDialog = false;
+                        }
+                    }).catch(err => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+                }).catch(_ => { });
         }
     },
     created() {

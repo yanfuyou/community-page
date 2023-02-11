@@ -14,6 +14,7 @@
                     <div class="articleContent">
                         <el-tag effect="plain">资源名称</el-tag>{{source.fileName}}
                         <el-button type="info" round style="margin-left:20px;" size="small" @click="download(source.id,source.visitPath,source.fileName)">下载</el-button>
+                        <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报" @click="handleAcc(source.id, 'file')"></i>
                         <el-button v-if="source.createBy == userName" type="danger" round size="small" @click="remove(source.id)">删除</el-button>
                     </div>
                 </el-col>
@@ -30,14 +31,32 @@
                 </el-col>
             </el-row>
         </div>
-        
+        <el-drawer title="举报!" :before-close="doAcc" :visible.sync="accDialog" direction="rtl"
+            custom-class="demo-drawer" ref="drawer">
+            <div class="demo-drawer__content">
+                <el-form :model="temp">
+                    <el-form-item label="理由" label-width="80px">
+                        <el-input type="textarea" :rows="3" v-model="temp.reason"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div class="demo-drawer__footer">
+                    <el-button @click="accDialog = false">取 消</el-button>
+                    <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{
+                        loading?
+                    '提交中 ...'
+                            : '确 定'
+                    }}</el-button>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
-    created(){
-        // console.log(this.sources);
+    computed: {
+        ...mapGetters('user', ['getUser'])
     },
     filters:{
         timeFilter(val) {
@@ -56,11 +75,48 @@ export default {
                 // console.log(res.data);
                 this.$forceUpdate();
             })
+        },
+        handleAcc(relId, bizType) {
+            this.temp.relId = null
+            this.temp.reason = null
+            this.temp.bizType = null
+            this.temp.relId = relId
+            this.temp.bizType = bizType
+            this.accDialog = true
+        },
+        doAcc() {
+            if (this.loading) {
+                return;
+            }
+            this.$confirm('确定要举报吗？')
+                .then(_ => {
+                    this.loading = true;
+                    this.$http.post('/accusation/add', this.temp).then(res => {
+                        if (res.data.code === 2000) {
+                            this.$message.success({
+                                message: res.data.msg,
+                                offset: 70
+                            })
+                            this.loading = false;
+                            this.accDialog = false;
+                        }
+                    }).catch(err => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+                }).catch(_ => { });
         }
     },
     data() {
         return {
-            userName: this.$store.getters['user/getUser'].userName
+            userName: this.$store.getters['user/getUser'].userName,
+            accDialog: false,
+            temp: {
+                relId: null,
+                reason: null,
+                bizType: null
+            },
+            loading: false
         }
     },
     props: {

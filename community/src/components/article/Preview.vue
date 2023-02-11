@@ -8,11 +8,13 @@
                 <el-main>
                     <el-row :gutter="24">
                         <el-col :span="6">
-                            <el-input type="text" readonly="" v-model="title" show-word-limit>
-                            </el-input>
+                            <el-input type="text" readonly="" v-model="title" show-word-limit />
                         </el-col>
                         <el-col :span="1">
                             <el-button v-if="delFlag == true" size="mini" round @click="remove">删除</el-button>
+                        </el-col>
+                        <el-col v-if="getUser.id != null && getUser.id != ''" :span="1">
+                            <i class="el-icon-warning-outline" title="举报" @click="handleAcc(articleId, 'article')"></i>
                         </el-col>
                         <el-col :span="6">
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
@@ -61,11 +63,14 @@
                                             :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
                                         </el-avatar> -->
                                             {{ data.createBy }}:
-                                            {{ data.content }}<i class="el-icon-chat-line-round" title="回复"
+                                            {{ data.content }}
+                                            <i  v-if="getUser.id != '' || getUser.id != null" class="el-icon-chat-line-round" title="回复"
                                                 @click="showDialog('1', data.commentId)"></i>
                                             <i class="el-icon-delete" title="删除"
                                                 v-if="data.createBy == getUser.userName"
                                                 @click="delComment(data.commentId)"></i>
+                                            <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报"
+                                                @click="handleAcc(data.commentId, 'comment')"></i>
                                         </span>
                                     </span>
                                 </el-tree>
@@ -85,6 +90,24 @@
                 </el-main>
             </el-container>
         </el-container>
+        <el-drawer title="举报!" :before-close="handleClose" :visible.sync="accDialog" direction="rtl"
+            custom-class="demo-drawer" ref="drawer">
+            <div class="demo-drawer__content">
+                <el-form :model="temp">
+                    <el-form-item label="理由" label-width="80px">
+                        <el-input type="textarea" :rows="3" v-model="temp.reason"></el-input>
+                    </el-form-item>
+                </el-form>
+                <div class="demo-drawer__footer">
+                    <el-button @click="accDialog = false">取 消</el-button>
+                    <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{
+                        loading?
+                    '提交中 ...'
+                            : '确 定'
+                    }}</el-button>
+                </div>
+            </div>
+        </el-drawer>
     </div>
 </template>
 
@@ -120,7 +143,14 @@ export default {
                 id: ' ',
                 flag: false,
             },
-            delFlag: false
+            delFlag: false,
+            accDialog: false,
+            temp: {
+                relId: null,
+                reason: null,
+                bizType: null
+            },
+            loading: false
         }
     },
     components: {
@@ -248,6 +278,36 @@ export default {
                     this.$router.go(-1);
                 }
             })
+        },
+        handleAcc(relId, bizType) {
+            this.temp.relId = null
+            this.temp.reason = null
+            this.temp.bizType = null
+            this.temp.relId = relId
+            this.temp.bizType = bizType
+            this.accDialog = true
+        },
+        handleClose() {
+            if (this.loading) {
+                return;
+            }
+            this.$confirm('确定要举报吗？')
+                .then(_ => {
+                    this.loading = true;
+                    this.$http.post('/accusation/add', this.temp).then(res => {
+                        if (res.data.code === 2000) {
+                            this.$message.success({
+                                message: res.data.msg,
+                                offset: 70
+                            })
+                            this.loading = false;
+                            this.accDialog = false;
+                        }
+                    }).catch(err => {
+                        this.loading = false;
+                        console.log(err);
+                    })
+                }).catch(_ => { });
         }
     },
     created() {
