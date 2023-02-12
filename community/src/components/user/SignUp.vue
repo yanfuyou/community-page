@@ -3,7 +3,7 @@
         <el-form-item label="用户名" prop="userName">
             <el-input v-model="user.userName"></el-input>
         </el-form-item>
-        <el-form-item label="昵称" prop="userName">
+        <el-form-item label="昵称" prop="userAlias">
             <el-input v-model="user.userAlias"></el-input>
         </el-form-item>
         <el-form-item label="密码" prop="userPassword">
@@ -45,17 +45,20 @@ export default {
                 ],
                 userPassword: [
                     { required: true, message: '密码不能为空', trigger: 'blur' },
-                    { min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur' }
+                    { min: 6, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur' }
                 ],
                 rePassword: [
                     { validator: rePassword, trigger: 'blur' }
+                ],
+                userAlias: [
+                    { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
                 ]
             }
         };
     },
     methods: {
         submitForm(user) {
-            if (user.userName == '' || user.userPassword == '' || user.rePassword == '') {
+            if (user.userName == '' || user.userPassword == '' || user.rePassword == '' || user.rePassword != user.userPassword) {
                 this.$message.error({
                     message: '请检查输入信息',
                     offset: 70

@@ -5,8 +5,8 @@
         <el-menu-item id="tag" index="0">
           <el-button class="button-new-tag" size="small" @click="dump('/index')">交流社区</el-button>
         </el-menu-item>
-        <el-menu-item v-if="handlePermission('/index')" index="1" @click="dump('/index')">首页</el-menu-item>
-        <el-menu-item v-if="handlePermission('/focus/focusPage')" index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
+        <el-menu-item index="1" @click="dump('/index')">首页</el-menu-item>
+        <el-menu-item index="2" @click="dump('/focus/focusPage')">聚焦</el-menu-item>
         <el-menu-item v-if="handlePermission('/hole/tree')" index="5" @click="dump('/hole/tree')">嗨！树洞</el-menu-item>
         <el-menu-item id="search">
           <el-input placeholder="请输入内容" v-model="searchVal" class="input-with-select">

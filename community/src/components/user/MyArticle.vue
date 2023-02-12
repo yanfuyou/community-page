@@ -86,7 +86,7 @@ export default {
             // 获取用户名
             this.$http.get('/user/' + this.$route.query.id).then(userRes => {
                 if (userRes.data.code === 2000) {
-                    this.$http.get('/material/myMaterial/' + userRes.data.records.id + '/0').then(res => {
+                    this.$http.get('/material/myMaterial/' + userRes.data.records.userName + '/0').then(res => {
                         this.sources = res.data.records;
                     })
                 }

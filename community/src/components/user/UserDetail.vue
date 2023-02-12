@@ -8,7 +8,7 @@
                 <el-descriptions class="margin-top" :column="2" border>
                     <el-descriptions-item>
                         <template slot="label">
-                            <i class="el-icon-zoom-in"></i>
+                            <!-- <i class="el-icon-zoom-in"></i> -->
                             用户名
                         </template>
                         {{ user.userAlias }}
