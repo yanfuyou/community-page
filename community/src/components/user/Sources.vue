@@ -14,8 +14,8 @@
                     <div class="articleContent">
                         <el-tag effect="plain">资源名称</el-tag>{{source.fileName}}
                         <el-button type="info" round style="margin-left:20px;" size="small" @click="download(source.id,source.visitPath,source.fileName)">下载</el-button>
-                        <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报" @click="handleAcc(source.id, 'file')"></i>
                         <el-button v-if="source.createBy == userName" type="danger" round size="small" @click="remove(source.id)">删除</el-button>
+                        <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报" @click="handleAcc(source.id, 'file')"></i>
                     </div>
                 </el-col>
             </el-row>

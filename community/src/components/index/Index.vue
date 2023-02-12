@@ -47,9 +47,9 @@
                         <!-- 资料内容 -->
                         <Sources :sources="sources"></Sources>
                     </el-tab-pane>
-                    <el-tab-pane label="平台推荐" name="fourth">
+                    <!-- <el-tab-pane label="平台推荐" name="fourth">
                         <ArticleList></ArticleList>
-                    </el-tab-pane>
+                    </el-tab-pane> -->
                 </el-tabs>
             </el-col>
             <el-col :span="7">

@@ -22,10 +22,8 @@
                         <el-col :span="24">
                             <el-breadcrumb separator="|" style="color:#2b426e !important;">
                                 <el-breadcrumb-item>文章数：{{user.report.artSum | scoreFilter}}</el-breadcrumb-item>
-                                <el-breadcrumb-item>资料数：</el-breadcrumb-item>
                                 <el-breadcrumb-item>总访问量：{{user.report.readSum | scoreFilter}}</el-breadcrumb-item>
-                                <el-breadcrumb-item>排名：</el-breadcrumb-item>
-                                <el-breadcrumb-item>收藏数：{{user.report.followSum | scoreFilter}}</el-breadcrumb-item>
+                                <el-breadcrumb-item>历史收藏总数：{{user.report.followSum | scoreFilter}}</el-breadcrumb-item>
                             </el-breadcrumb>
                             <div>
                                 <i style="font-size:30px;margin-top:20px;"
@@ -174,7 +172,7 @@ export default {
             this.$http.post('/user/score?userId=' + this.$route.query.id).then(res => {
                 let score = res.data.records;
                 this.user.score.all = score.all;
-                this.user.score.thisMOnth = score.thisMonth;
+                this.user.score.thisMonth = score.thisMonth;
             })
         },
         setTags() {

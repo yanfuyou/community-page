@@ -19,9 +19,9 @@
                         <el-col :span="6">
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
                         </el-col>
-                        <el-col :span="8">
-                            <span v-if="encl.downPath != ''" class="fileClass" @click="downFile">
-                                <el-tag type="info" effect="dark">附件</el-tag>{{ encl.fileName }}<i
+                        <el-col :span="7">
+                            <span v-if="encl.downPath != null && encl.downPath != ''" class="fileClass" @click="downFile">
+                                <el-tag type="info" effect="dark">附件</el-tag>{{ encl.fileName | nameFilter }}<i
                                     class="el-icon-download"></i>
                             </span>
                         </el-col>
@@ -41,7 +41,7 @@
                             </mavon-editor>
                         </el-col>
                     </el-row>
-                    <el-row>
+                    <el-row :gutter="20">
                         <el-col :span="24">
                             <el-card class="box-card" style="line-height:5px; margin-bottom: 50px;">
                                 <div slot="header" class="clearfix">
@@ -157,6 +157,11 @@ export default {
         UserDetail,
         Tree
     },
+    filters: {
+        nameFilter(val) {
+            return val.slice(0, 10) + '...'
+        }
+    },
     computed: {
         ...mapGetters('user', ['getUser'])
     },
@@ -200,7 +205,7 @@ export default {
                     // 附件
                     if (res.data.records.enclosure === '1') {
                         this.$http.get('/article/enclInfo/' + res.data.records.id).then(res => {
-                            if (res.data.code === 2000) {
+                            if (res.data.code === 2000 && res.data.records) {
                                 this.encl = res.data.records;
                             }
                         })
