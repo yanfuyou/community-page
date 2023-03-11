@@ -1,6 +1,11 @@
 <template>
     <div class="block">
-        <el-carousel height="300px">
+        <el-empty description="快去发布吧" v-if="getHots.length < 1">
+            <template v-slot:image>
+                <img src="@/assets/img/empty/emptyCar.png">
+            </template>
+        </el-empty>
+        <el-carousel height="300px" v-else>
             <el-carousel-item v-for="item in getHots" :key="item.id">
                 <img :src="item.coverPath" class="tu" @click="dump('/article/preview',item.id)"/>
                 <!-- <h3 class="small">{{ item }}</h3> -->

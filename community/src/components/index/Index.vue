@@ -26,8 +26,12 @@
                 <HeadLine :head-mas="headMas"></HeadLine>
             </el-col>
             <el-col :span="6" class="one">
-                <!-- <div class="grid-content bg-purple">广告</div> -->
-                <el-carousel height="250px">
+                <el-empty description="管理员暂未发布" :image-size="200" v-if="sources.length == 0">
+                    <template v-slot:image>
+                        <img src="@/assets/img/empty/emptyVideo.png">
+                    </template>
+                </el-empty>
+                <el-carousel :autoplay="false" height="250px">
                     <el-carousel-item v-for="(video, index) in videos" :key="index">
                         <video height="250px" controls object-fit="contain" :src="video.visitPath"></video>
                     </el-carousel-item>
@@ -184,7 +188,7 @@ export default {
         setVideos() {
             let dto = {
                 current: 1,
-                size: 5,
+                size: 10,
                 orders: [
                     {
                         asc: true,
@@ -197,12 +201,12 @@ export default {
                 }
             }
             this.$http.post('/file/videoList', dto).then(res => {
-                if(res.data.code === 2000){
+                if (res.data.code === 2000) {
                     this.videos = res.data.records.records;
                 }
             })
         },
-        setHeadMas(){
+        setHeadMas() {
             let dto = {
                 current: 1,
                 size: 4,
@@ -216,9 +220,9 @@ export default {
                     flag: '0'
                 }
             }
-            this.$http.post('/material/list',dto).then(res => {
+            this.$http.post('/material/list', dto).then(res => {
                 // console.log(res.data);
-                if(res.data.code === 2000){
+                if (res.data.code === 2000) {
                     this.headMas = res.data.records.records;
                 }
             })

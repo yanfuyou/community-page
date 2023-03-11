@@ -1,6 +1,10 @@
 <template>
     <div id="article">
-        <el-empty :image-size="200" v-if="sources.length == 0"></el-empty>
+        <el-empty description="等待分享中。。。" :image-size="200" v-if="sources.length == 0">
+            <template v-slot:image>
+                <img src="@/assets/img/empty/emptyMa.png">
+            </template>
+        </el-empty>
         <div v-else id="articleList" v-for="(source,index) in sources" :key="index">
             <el-row>
                 <el-col :span="24">
@@ -72,7 +76,10 @@ export default {
         },
         remove(id){
             this.$http.get('/material/remove/' + id).then(res => {
-                // console.log(res.data);
+                this.$message.success({
+                    message: res.data.msg,
+                    offset: 70
+                })
                 this.$forceUpdate();
             })
         },

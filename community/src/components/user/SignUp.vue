@@ -1,22 +1,25 @@
 <template>
-    <el-form :model="user" :rules="rules" ref="user" label-width="100px" class="formStyle">
-        <el-form-item label="用户名" prop="userName">
-            <el-input v-model="user.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="昵称" prop="userAlias">
-            <el-input v-model="user.userAlias"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="userPassword">
-            <el-input type="password" v-model="user.userPassword"></el-input>
-        </el-form-item>
-        <el-form-item label="确认密码" prop="rePassword">
-            <el-input type="password" v-model="user.rePassword" @keyup.enter.native="submitForm(user)"></el-input>
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="submitForm(user)">注册</el-button>
-            <el-button @click="resetForm('user')">重置</el-button>
-        </el-form-item>
-    </el-form>
+    <div>
+        <img class="studyImg" src="@/assets/img/svg/commperate.svg">
+        <el-form :model="user" :rules="rules" ref="user" label-width="100px" class="formStyle">
+            <el-form-item label="用户名" prop="userName">
+                <el-input v-model="user.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="昵称" prop="userAlias">
+                <el-input v-model="user.userAlias"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="userPassword">
+                <el-input type="password" v-model="user.userPassword"></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码" prop="rePassword">
+                <el-input type="password" v-model="user.rePassword" @keyup.enter.native="submitForm(user)"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm(user)">注册</el-button>
+                <el-button @click="resetForm('user')">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
 </template>
 
 <script>
@@ -24,12 +27,12 @@ export default {
     data() {
         // 自定义校验规则
         let rePassword = (rule, value, callback) => {
-            if(this.user.userPassword != this.user.rePassword){
+            if (this.user.userPassword != this.user.rePassword) {
                 return callback(new Error('密码不一致'));
-            }else{
+            } else {
                 callback()
             }
-            
+
         };
         return {
             user: {
@@ -88,8 +91,13 @@ export default {
 
 <style scoped>
 .formStyle {
-    margin: 200px auto auto 600px;
+    margin: 200px 500px auto auto;
     width: 450px;
-    position: fixed;
+    float: right;
+}
+.studyImg{
+    margin: 100px auto auto 200px;
+    height: 500px;
+    float: left;
 }
 </style>

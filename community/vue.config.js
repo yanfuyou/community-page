@@ -8,7 +8,7 @@ module.exports = defineConfig({
   lintOnSave: false,
   devServer: {
     allowedHosts: ['fuyou.free.idcfengye.com'],
-    host: '192.168.3.7',
+    host: 'localhost',
     port: 8099,
     open: true
   }

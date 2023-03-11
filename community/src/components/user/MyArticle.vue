@@ -10,7 +10,7 @@
         <el-tab-pane label="资源" name="third">
             <Sources :sources="sources"></Sources>
         </el-tab-pane>
-        <el-tab-pane label="队伍" name="fourth">
+        <el-tab-pane label="队伍" name="fourth" v-if="getUser.id == currentUserId">
             <my-team></my-team>
         </el-tab-pane>
         <el-tab-pane label="收藏" name="five">
@@ -24,16 +24,19 @@
 import ArticleList from './ArticleList.vue'
 import Sources from './Sources.vue'
 import MyTeam from '@/components/user/MyTeam.vue'
+import { mapGetters } from 'vuex';
 export default {
     data() {
         return {
             activeName: 'second',
             articles: [],
             sources: [],
-            collects: []
+            collects: [],
+            currentUserId: ''
         };
     },
     computed: {
+        ...mapGetters('user',['getUser']),
         getLately() {
             // 需要使用深拷贝赋值
             let latelys = JSON.parse(JSON.stringify(this.articles));
@@ -113,6 +116,7 @@ export default {
         this.setArticles();
         this.setSources();
         this.setCollects();
+        this.currentUserId = this.$route.query.id;
     }
 };
 </script>

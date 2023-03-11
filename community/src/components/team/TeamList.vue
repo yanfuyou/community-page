@@ -1,6 +1,10 @@
 <template>
     <div>
-        <el-empty :image-size="200" v-if="teamList.length == 0"></el-empty>
+        <el-empty description="去找队友吧" :image-size="200" v-if="teamList.length == 0">
+            <template v-slot:image>
+                <img src="@/assets/img/empty/emptyTeam.png">
+            </template>
+        </el-empty>
         <el-collapse>
             <el-collapse-item v-model="activeName" accordion v-for="(team, index) in teamList" :key="index"
                 :title="team.name" :name="index">
@@ -49,8 +53,8 @@
             </el-collapse-item>
         </el-collapse>
         <div class="draw">
-            <el-drawer title="提交报名!" :before-close="handleClose" :visible.sync="dialog" direction="rtl"
-                custom-class="demo-drawer" ref="drawer">
+            <el-drawer title="提交报名!" :before-close="handleEnroll" :visible.sync="dialog" direction="rtl"
+                custom-class="demo-drawer" ref="drawert">
                 <div class="demo-drawer__content">
                     <el-form :model="teamUser">
                         <el-form-item label="姓名" :label-width="formLabelWidth">
@@ -65,7 +69,7 @@
                     </el-form>
                     <div class="demo-drawer__footer">
                         <el-button @click="cancelForm">取 消</el-button>
-                        <el-button type="primary" @click="$refs.drawer.closeDrawer()" :loading="loading">{{
+                        <el-button type="primary" @click="$refs.drawert.closeDrawer()" :loading="loading">{{
                             loading?
                         '提交中 ...'
                                 : '确 定'
@@ -133,7 +137,7 @@ export default {
             this.dialog = true;
             this.teamUser.teamId = team.id;
         },
-        handleClose() {
+        handleEnroll() {
             if (this.loading) {
                 return;
             }

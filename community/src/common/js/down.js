@@ -6,6 +6,7 @@ export default {
         })
     },
     getBolb(url) {
+        // console.log('开始请求文件-',url)
         return new Promise(resolve => {
             const xhr = new XMLHttpRequest()
             xhr.open('GET', url, true)

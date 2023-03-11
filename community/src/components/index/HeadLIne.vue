@@ -1,6 +1,11 @@
 <template>
     <div>
-        <ul>
+        <el-empty description="等待分享中。。。" :image-size="200" v-if="headMas.length == 0">
+            <template v-slot:image>
+                <img src="@/assets/img/empty/emptyMa.png">
+            </template>
+        </el-empty>
+        <ul v-else>
             <li v-for="(item, index) in headMas" :key="index" title="点击下载"
                 @click="download(item.id,item.fileName, item.visitPath)">
                 <span class="title">{{ item.descr }}</span>

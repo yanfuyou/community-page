@@ -1,6 +1,10 @@
 <template>
     <div class="userList">
-        <el-empty :image-size="100" v-if="users.length == 0"></el-empty>
+        <el-empty description="快去注册吧" :image-size="200" v-if="users.length == 0">
+            <template v-slot:image>
+                <img src="@/assets/img/empty/emptyUser.png">
+            </template>
+        </el-empty>
         <el-row :gutter="20">
             <el-col :span="24">
                 <div class="item" v-for="(user, index) in users" :key="index">

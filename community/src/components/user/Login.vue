@@ -1,27 +1,30 @@
 <template>
-    <el-form :model="user" :rules="rules" ref="user" label-width="100px" class="formStyle">
-        <el-form-item label="用户名" prop="userName">
-            <el-input v-model="user.userName"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="userPassword">
-            <el-input type="password" v-model="user.userPassword"></el-input>
-        </el-form-item>
-        <el-form-item label="验证码" prop="verification" id="verification" @keyup.enter.native="submitForm(user)">
-            <el-row>
-                <el-col :span="12">
-                    <el-input id="codeIn" v-model="user.verification"></el-input>
-                </el-col>
-                <el-col :span="12">
-                    <div id="code-img"><span title="点击刷新" @click="setCode">{{ codeNum }}</span></div>
-                </el-col>
-            </el-row>
+    <div class="one">
+        <img class="studyImg" src="@/assets/img/svg/study.png">
+        <el-form :model="user" :rules="rules" ref="user" label-width="100px" class="formStyle">
+            <el-form-item label="用户名" prop="userName">
+                <el-input v-model="user.userName"></el-input>
+            </el-form-item>
+            <el-form-item label="密码" prop="userPassword">
+                <el-input type="password" v-model="user.userPassword"></el-input>
+            </el-form-item>
+            <el-form-item label="验证码" prop="verification" id="verification" @keyup.enter.native="submitForm(user)">
+                <el-row>
+                    <el-col :span="12">
+                        <el-input id="codeIn" v-model="user.verification"></el-input>
+                    </el-col>
+                    <el-col :span="12">
+                        <div id="code-img"><span title="点击刷新" @click="setCode">{{ codeNum }}</span></div>
+                    </el-col>
+                </el-row>
 
-        </el-form-item>
-        <el-form-item>
-            <el-button type="primary" @click="submitForm(user)">登录</el-button>
-            <el-button @click="resetForm('user')">重置</el-button>
-        </el-form-item>
-    </el-form>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="submitForm(user)">登录</el-button>
+                <el-button @click="resetForm('user')">重置</el-button>
+            </el-form-item>
+        </el-form>
+    </div>
 </template>
 
 <script>
@@ -82,9 +85,9 @@ export default {
                         } else {
                             let permissions = []
                             roles.forEach(role => {
-                              permissions = permissions.concat(permission[role])
+                                permissions = permissions.concat(permission[role])
                             })
-                            user.permissions = permissions   
+                            user.permissions = permissions
                         }
                     })
                     this.$store.commit('user/setUser', user);
@@ -119,13 +122,6 @@ export default {
             this.codeNum = res.data.records.codeNum;
             this.user.codeUid = res.data.records.uid;
         })
-        // // 监听回车按键
-        // document.onkeydown = function (e) {
-        //     // console.log(e);
-        //     if(e.keyCode === 13){
-        //         submitForm(this.user);
-        //     }
-        // }
 
     }
 }
@@ -133,9 +129,9 @@ export default {
 
 <style scoped>
 .formStyle {
-    margin: 200px auto auto 600px;
+    margin: 200px 500px auto auto;
     width: 450px;
-    position: fixed;
+    float: right;
 }
 
 #code-img {
@@ -143,5 +139,10 @@ export default {
     font-size: 24px;
     text-align: center;
     background-image: url(../../assets/img/codeBg.png);
+}
+.studyImg{
+    margin: 100px auto auto 400px;
+    width: 450px;
+    float: left;
 }
 </style>

@@ -48,7 +48,7 @@ export default {
             val = val.replaceAll(':', '');
             val = val.replaceAll('#', '');
             val = val.replaceAll('hljs-center', '');
-            return val;
+            return val.slice(0,600);
         }
     },
     methods: {
