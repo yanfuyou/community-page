@@ -148,7 +148,7 @@ export default {
         setSources() {
             let maDto = {
                 current: 1,
-                size: 1000,
+                size: 30,
                 orders: [
                     {
                         asc: true,
@@ -177,7 +177,7 @@ export default {
                 queryParam: {
                     flag: 0
                 },
-                size: 10
+                size: 6
             }
             this.$http.post('/user/userMini', dto).then(res => {
                 if (res.data.code === 2000) {

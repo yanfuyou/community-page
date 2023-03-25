@@ -29,7 +29,7 @@
                 <span v-if="true" class="fileClass">上传的封面名<i class="el-icon-delete-solid"></i></span>
             </el-col> -->
             <el-col :span="4">
-                <el-button round @click="out">存草稿</el-button>
+                <!-- <el-button round @click="out">存草稿</el-button> -->
                 <el-button round @click="release">发布</el-button>
             </el-col>
         </el-row>

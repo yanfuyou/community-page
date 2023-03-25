@@ -26,7 +26,7 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item icon="el-icon-bell" v-if="handlePermission('/user/userhome')"
                   @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
-                <el-dropdown-item v-if="handlePermission('/user/setting')" icon="el-icon-setting" native="dump('/user/setting')">设置</el-dropdown-item>
+                <el-dropdown-item v-if="handlePermission('/user/setting')" icon="el-icon-setting" @click.native="dump('/user/setting')">设置</el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
