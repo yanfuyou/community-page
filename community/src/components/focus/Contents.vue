@@ -28,6 +28,58 @@ export default {
     created() {
         this.searchVal = this.$route.query.searchVal;
         this.setUsers();
+        // 触底刷新
+        let firstPage = 1;
+        let lastTime = 0;
+        window.onscroll = ()=>{
+            // 窗口实际高度
+            let windowH = document.documentElement.scrollHeight;
+            // 元素在屏幕上的可见区域高度
+            let documentH = document.documentElement.clientHeight;
+            // 获取或设置元素内容的垂直滚动像素数
+            let scrollH = document.documentElement.scrollTop;
+            if(documentH + scrollH + 5 >= windowH){
+                let now = Date.now()
+                // 下一批数据加载需要在十秒之后
+                if(now - lastTime > 10 * 1000){
+                    console.log('获取新数据');
+                    if(firstPage == 1){
+                        this.articles = [];
+                        this.sources = [];
+                    }
+                    let nextPage = firstPage++;
+                    let dto = {
+                        current: nextPage,
+                        size: 30,
+                        queryParam: {
+                            labelForSearch: this.checkedTags,
+                            articleContent: this.searchVal
+                        }
+                    }
+                        // 设置文章
+                    this.$http.post('/article/search', dto).then(res => {
+                        if (res.data.code === 2000) {
+                            this.articles = this.articles.concat(res.data.records.records);
+                        }
+                    })
+                    // 设置资源
+                    let maDto = {
+                        current: nextPage,
+                        size: 30,
+                        queryParam: {
+                            flag: '0',
+                            descr: this.searchVal
+                        }
+                    }
+                    this.$http.post('/material/list', maDto).then(res => {
+                        if (res.data.code === 2000) {
+                            this.sources = this.sources.concat(res.data.records.records);
+                        }
+                    })
+                    lastTime = now;
+                }
+            }
+        }
     },
     methods: {
         setUsers() {
@@ -78,7 +130,7 @@ export default {
                 this.checkedTags = val;
                 let dto = {
                     current: 1,
-                    size: 1000,
+                    size: 30,
                     queryParam: {
                         labelForSearch: this.checkedTags,
                         articleContent: this.searchVal
@@ -93,7 +145,7 @@ export default {
                 // 设置资源
                 let maDto = {
                     current: 1,
-                    size: 1000,
+                    size: 30,
                     queryParam: {
                         flag: '0',
                         descr: this.searchVal
@@ -115,7 +167,7 @@ export default {
                 // console.log(this.searchVal);
                 let dto = {
                     current: 1,
-                    size: 1000,
+                    size: 30,
                     queryParam: {
                         labelForSearch: this.checkedTags,
                         articleContent: this.searchVal
@@ -130,7 +182,7 @@ export default {
                 // 设置资源
                 let maDto = {
                     current: 1,
-                    size: 1000,
+                    size: 30,
                     queryParam: {
                         flag: '0',
                         descr: this.searchVal

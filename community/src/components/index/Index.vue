@@ -26,7 +26,7 @@
                 <HeadLine :head-mas="headMas"></HeadLine>
             </el-col>
             <el-col :span="6" class="one">
-                <el-empty description="管理员暂未发布" :image-size="200" v-if="sources.length == 0">
+                <el-empty description="管理员暂未发布" :image-size="200" v-if="videos.length == 0">
                     <template v-slot:image>
                         <img src="@/assets/img/empty/emptyVideo.png">
                     </template>
@@ -48,7 +48,6 @@
                         <ArticleList :articles="getHots"></ArticleList>
                     </el-tab-pane>
                     <el-tab-pane label="高效" name="third">
-                        <!-- 资料内容 -->
                         <Sources :sources="sources"></Sources>
                     </el-tab-pane>
                     <!-- <el-tab-pane label="平台推荐" name="fourth">
@@ -129,9 +128,9 @@ export default {
         },
     },
     methods: {
-        setArticles() {
+        setArticles(page) {
             let dto = {
-                current: 1,
+                current: page,
                 size: 30,
                 flag: '0',
                 orders: [
@@ -142,12 +141,12 @@ export default {
                 ]
             }
             this.$http.post('article/miniList', dto).then(res => {
-                this.articles = res.data.records.records;
+                this.articles = this.articles.concat(res.data.records.records);
             })
         },
-        setSources() {
+        setSources(page) {
             let maDto = {
-                current: 1,
+                current: page,
                 size: 30,
                 orders: [
                     {
@@ -161,13 +160,13 @@ export default {
             }
             this.$http.post('/material/list', maDto).then(res => {
                 if (res.data.code === 2000) {
-                    this.sources = res.data.records.records;
+                    this.sources = this.sources.concat(res.data.records.records);
                 }
             })
         },
-        setUsers() {
+        setUsers(page) {
             let dto = {
-                current: 1,
+                current: page,
                 orders: [
                     {
                         asc: false,
@@ -177,17 +176,17 @@ export default {
                 queryParam: {
                     flag: 0
                 },
-                size: 6
+                size: 10
             }
             this.$http.post('/user/userMini', dto).then(res => {
                 if (res.data.code === 2000) {
-                    this.users = res.data.records.records;
+                    this.users = this.users.concat(res.data.records.records);
                 }
             })
         },
-        setVideos() {
+        setVideos(page) {
             let dto = {
-                current: 1,
+                current: page,
                 size: 10,
                 orders: [
                     {
@@ -201,14 +200,14 @@ export default {
                 }
             }
             this.$http.post('/file/videoList', dto).then(res => {
-                if (res.data.code === 2000) {
+                if (res.data.code === 2000 &&res.data.records.records.length != 0) {
                     this.videos = res.data.records.records;
                 }
             })
         },
-        setHeadMas() {
+        setHeadMas(page) {
             let dto = {
-                current: 1,
+                current: page,
                 size: 4,
                 orders: [
                     {
@@ -222,18 +221,40 @@ export default {
             }
             this.$http.post('/material/list', dto).then(res => {
                 // console.log(res.data);
-                if (res.data.code === 2000) {
+                if (res.data.code === 2000 && res.data.records.records.length != 0) {
                     this.headMas = res.data.records.records;
                 }
             })
         }
     },
     created() {
-        this.setArticles();
-        this.setSources();
-        this.setUsers();
-        this.setVideos();
-        this.setHeadMas();
+        let firstPage = 1;
+        this.setArticles(firstPage);
+        this.setSources(firstPage);
+        this.setUsers(firstPage);
+        this.setVideos(firstPage);
+        this.setHeadMas(firstPage);
+        let lastTime = 0;
+        window.onscroll = ()=>{
+            // 窗口实际高度
+            let windowH = document.documentElement.scrollHeight;
+            // 元素在屏幕上的可见区域高度
+            let documentH = document.documentElement.clientHeight;
+            // 获取或设置元素内容的垂直滚动像素数
+            let scrollH = document.documentElement.scrollTop;
+            if(documentH + scrollH + 5 >= windowH){
+                let now = Date.now()
+                // 下一批数据加载需要在十秒之后
+                if(now - lastTime > 10 * 1000){
+                    this.setArticles(firstPage++)
+                    this.setSources(firstPage++);
+                    this.setHeadMas(firstPage++);
+                    this.setVideos(firstPage++);
+                    console.log('获取新数据');
+                    lastTime = now;
+                }
+            }
+        }
     }
 }
 </script>
