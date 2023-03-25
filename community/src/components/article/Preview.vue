@@ -173,11 +173,27 @@ export default {
             this.comment.articleId = this.articleId;
         },
         releaseComment() {
-            this.$http.post('/comment/release', this.comment).then(() => {
-                this.dialogVisible = false;
-                // 置空内容
-                this.comment.content = '';
-                this.updateCommentList();
+            // 先检查是否含有禁用词
+            this.$http.post('/sensitive/checkStr',{"sourceStr": this.comment.content}).then(res => {
+                if(res.data.code === 2000 && res.data.records.length > 0){
+                    let words = '';
+                    res.data.records.forEach(wordObj => {
+                        words = words + wordObj.word;
+                    })
+                    this.$notify({
+                        title: '请文明用语',
+                        message: words,
+                        type: 'warning',
+                        offset: 70
+                    });
+                }else{
+                    this.$http.post('/comment/release', this.comment).then(() => {
+                        this.dialogVisible = false;
+                        // 置空内容
+                        this.comment.content = '';
+                        this.updateCommentList();
+                    });
+                }
             });
         },
         getDetail(id) {
@@ -225,9 +241,6 @@ export default {
         },
         downFile() {
             this.$down.myDownLoad(this.encl.downPath, this.encl.fileName);
-        },
-        addRead() {
-            this.$http.post('')
         },
         delCollect() {
             this.$http.delete('/collect/del/' + this.collect.id)

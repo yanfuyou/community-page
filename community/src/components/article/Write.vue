@@ -19,15 +19,6 @@
                 <!-- 需要做修改 -->
                 <span v-if="true" class="fileClass">{{encl.fileName}}</span>
             </el-col>
-            <!-- 取消封面上传 -->
-            <!-- <el-col :span="3">
-                <el-upload class="upload-demo" :show-file-list="false"
-                    action="https://jsonplaceholder.typicode.com/posts/" :on-change="handleChange"
-                    :file-list="fileList">
-                    <el-button size="small" type="primary">封面</el-button>
-                </el-upload>
-                <span v-if="true" class="fileClass">上传的封面名<i class="el-icon-delete-solid"></i></span>
-            </el-col> -->
             <el-col :span="4">
                 <!-- <el-button round @click="out">存草稿</el-button> -->
                 <el-button round @click="release">发布</el-button>
@@ -192,13 +183,29 @@ export default {
                 }
                 this.$http.post('/article/addCover', articleCover)
             }
-            this.$http.post('/article/release', articleInfo).then(res => {
-                if(res.data.code === 2000){
-                    this.$message.success({
-                        message: '发布成功',
-                        offset: 70
+            // 先检查是否含有禁用词
+            this.$http.post('/sensitive/checkStr',{"sourceStr": articleInfo.articleContent}).then(res => {
+                if(res.data.code === 2000 && res.data.records.length > 0){
+                    let words = '';
+                    res.data.records.forEach(wordObj => {
+                        words = words + wordObj.word;
                     })
-                    this.$router.go(-1);
+                    this.$notify({
+                        title: '请文明用语',
+                        message: words,
+                        type: 'warning',
+                        offset: 70
+                    });
+                }else{
+                    this.$http.post('/article/release', articleInfo).then(res => {
+                        if(res.data.code === 2000){
+                            this.$message.success({
+                                message: '发布成功',
+                                offset: 70
+                            })
+                            this.$router.go(-1);
+                        }
+                    });
                 }
             });
         }
