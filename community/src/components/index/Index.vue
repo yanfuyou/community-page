@@ -31,9 +31,9 @@
                         <img src="@/assets/img/empty/emptyVideo.png">
                     </template>
                 </el-empty>
-                <el-carousel :autoplay="false" height="250px">
+                <el-carousel :autoplay="false" height="260px">
                     <el-carousel-item v-for="(video, index) in videos" :key="index">
-                        <video height="250px" controls object-fit="contain" :src="video.visitPath"></video>
+                        <video height="260px" controls object-fit="contain" :src="video.visitPath"></video>
                     </el-carousel-item>
                 </el-carousel>
             </el-col>

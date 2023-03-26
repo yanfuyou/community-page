@@ -63,7 +63,7 @@
                                     v-else>
                                     <span slot-scope="{data}">
                                         <span>
-                                            {{ data.createBy }}:
+                                            {{ data.updateBy }}:
                                             {{ data.content }}
                                             <i  v-if="getUser.id != '' || getUser.id != null" class="el-icon-chat-line-round" title="回复"
                                                 @click="showDialog('1', data.commentId)"></i>
@@ -210,7 +210,7 @@ export default {
             this.comment.articleId = this.articleId;
         },
         releaseComment() {
-            if(this.connent.connent == ''){
+            if(this.temp == ''){
                 this.$message.warning({message:'评论不能为空',offset:70})
                 return false;
             }
