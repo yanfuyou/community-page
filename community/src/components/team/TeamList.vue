@@ -194,6 +194,10 @@ export default {
             if (this.loading) {
                 return;
             }
+            if(this.temp == ''){
+                this.$message.warning({message:'理由不能为空',offset:70})
+                return false;
+            }
             this.$confirm('确定要举报吗？')
                 .then(_ => {
                     this.loading = true;
