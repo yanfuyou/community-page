@@ -41,7 +41,7 @@ export default {
     data() {
         return {
             id: '',
-            value: '# 文本',
+            value: '# 请输入内容',
             title: '',
             encl: {
                 id: '',

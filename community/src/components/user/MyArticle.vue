@@ -14,7 +14,6 @@
             <my-team></my-team>
         </el-tab-pane>
         <el-tab-pane label="收藏" name="five">
-            <!-- 截取一部分文章 -->
             <ArticleList :articles="collects"></ArticleList>
         </el-tab-pane>
     </el-tabs>
@@ -67,10 +66,10 @@ export default {
         handleClick(tab, event) {
             // console.log(tab, event);
         },
-        setArticles() {
+        setArticles(page) {
             let dto = {
-                current: 1,
-                size: 20,
+                current: page,
+                size: 30,
                 flag: '0',
                 userId: this.$route.query.id,
                 orders: [
@@ -81,7 +80,7 @@ export default {
                 ]
             }
             this.$http.post('article/miniList', dto).then(res => {
-                this.articles = res.data.records.records;
+                this.articles = this.articles.concat(res.data.records.records);
                 this.childFlag = true;
             })
         },
@@ -96,10 +95,10 @@ export default {
             })
 
         },
-        setCollects() {
+        setCollects(page) {
             let dto = {
-                current: 1,
-                size: 1000,
+                current: page,
+                size: 30,
                 queryParam: {
                     userId: this.$route.query.id,
                     flag: '0'
@@ -107,16 +106,38 @@ export default {
             }
             this.$http.post('/collect/page', dto).then(res => {
                 if (res.data.code === 2000) {
-                    this.collects = res.data.records.records;
+                    this.collects = this.collects.concat(res.data.records.records);
                 }
             })
         }
     },
     created() {
-        this.setArticles();
+        let firstPage = 1;
+        this.setArticles(firstPage);
         this.setSources();
-        this.setCollects();
+        this.setCollects(firstPage);
         this.currentUserId = this.$route.query.id;
+        // 触底刷新
+        let lastTime = 0;
+        window.onscroll = ()=>{
+            // 窗口实际高度
+            let windowH = document.documentElement.scrollHeight;
+            // 元素在屏幕上的可见区域高度
+            let documentH = document.documentElement.clientHeight;
+            // 获取或设置元素内容的垂直滚动像素数
+            let scrollH = document.documentElement.scrollTop;
+            if(documentH + scrollH + 5 >= windowH){
+                let now = Date.now()
+                let nextPage = firstPage++
+                // 下一批数据加载需要在十秒之后
+                if(now - lastTime > 10 * 1000){
+                    console.log('获取新数据');
+                    this.setArticles(nextPage);
+                    this.setCollects(nextPage);
+                    lastTime = now;
+                }
+            }
+        }
     }
 };
 </script>

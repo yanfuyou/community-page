@@ -10,8 +10,10 @@
                         <el-col :span="6">
                             <el-input type="text" readonly="" v-model="title" show-word-limit />
                         </el-col>
-                        <el-col :span="1">
+                        <el-col :span="3">
                             <el-button v-if="delFlag == true" size="mini" round @click="remove">删除</el-button>
+                            <el-button v-if="delFlag == true && type=='review'" size="mini" round @click="type='write'">修改</el-button>
+                            <el-button v-if="delFlag == true && type=='write'" size="mini" round @click="updateContent">保存</el-button>
                         </el-col>
                         <el-col v-if="getUser.id != null && getUser.id != ''" :span="1">
                             <i class="el-icon-warning-outline" title="举报" @click="handleAcc(articleId, 'article')"></i>
@@ -36,9 +38,11 @@
                     </el-row>
                     <el-row>
                         <el-col :span="24">
-                            <mavon-editor :subfield="false" :editable="false" :toolbarsFlag="false"
+                            <mavon-editor v-if="type=='review'" :subfield="false" :editable="false" :toolbarsFlag="false"
                                 defaultOpen="preview" :shortCut="false" v-model="value" ref="md" class="mavonWrite">
                             </mavon-editor>
+                            <mavon-editor v-if="type=='write'" @imgAdd="$imgAdd" :shortCut="false" :toolbars="toolbars" v-model="value" ref="md"
+                            class="mavonWrite"></mavon-editor>
                         </el-col>
                     </el-row>
                     <el-row :gutter="20">
@@ -59,9 +63,6 @@
                                     v-else>
                                     <span slot-scope="{data}">
                                         <span>
-                                            <!-- <el-avatar :size="20"
-                                            :src="'https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png'">
-                                        </el-avatar> -->
                                             {{ data.createBy }}:
                                             {{ data.content }}
                                             <i  v-if="getUser.id != '' || getUser.id != null" class="el-icon-chat-line-round" title="回复"
@@ -150,7 +151,43 @@ export default {
                 reason: null,
                 bizType: null
             },
-            loading: false
+            loading: false,
+            toolbars: {
+                bold: true, // 粗体
+                italic: true, // 斜体
+                header: true, // 标题
+                underline: true, // 下划线
+                strikethrough: true, // 中划线
+                mark: true, // 标记
+                superscript: true, // 上角标
+                subscript: true, // 下角标
+                quote: true, // 引用
+                ol: true, // 有序列表
+                ul: true, // 无序列表
+                link: true, // 链接
+                imagelink: true, // 图片链接
+                code: true, // code
+                table: true, // 表格
+                fullscreen: false, // 全屏编辑
+                readmodel: true, // 沉浸式阅读
+                htmlcode: true, // 展示html源码
+                help: true, // 帮助
+                /* 1.3.5 */
+                undo: true, // 上一步
+                redo: true, // 下一步
+                trash: true, // 清空
+                save: true, // 保存（触发events中的save事件）
+                /* 1.4.2 */
+                navigation: true, // 导航目录
+                /* 2.1.8 */
+                alignleft: true, // 左对齐
+                aligncenter: true, // 居中
+                alignright: true, // 右对齐
+                /* 2.2.1 */
+                subfield: true, // 单双栏模式
+                preview: true, // 预览
+            },
+            type: 'review'
         }
     },
     components: {
@@ -173,6 +210,10 @@ export default {
             this.comment.articleId = this.articleId;
         },
         releaseComment() {
+            if(this.connent.connent == ''){
+                this.$message.warning({message:'评论不能为空',offset:70})
+                return false;
+            }
             // 先检查是否含有禁用词
             this.$http.post('/sensitive/checkStr',{"sourceStr": this.comment.content}).then(res => {
                 if(res.data.code === 2000 && res.data.records.length > 0){
@@ -309,6 +350,10 @@ export default {
             if (this.loading) {
                 return;
             }
+            if(this.temp == ''){
+                this.$message.warning({message:'理由不能为空',offset:70})
+                return false;
+            }
             this.$confirm('确定要举报吗？')
                 .then(_ => {
                     this.loading = true;
@@ -326,6 +371,24 @@ export default {
                         console.log(err);
                     })
                 }).catch(_ => { });
+        },
+        $imgAdd(pos, $file) {
+            // 图片上传接口
+            const imageData = new FormData();
+            imageData.append("img", $file);
+            this.$http.post('/file/upload', imageData).then(res => {
+                this.$refs.md.$img2Url(pos, res.data.records.visitPath);
+            })
+        },
+        updateContent(){
+            let dto = {
+                id: this.articleId,
+                articleContent: this.value
+            }
+            this.$http.post('/article/updateContent',dto).then(res => {
+                this.$message.success({message:'修改成功',offset:70})
+            })
+            this.type = 'review';
         }
     },
     created() {

@@ -26,17 +26,36 @@
               <el-dropdown-menu slot="dropdown">
                 <el-dropdown-item icon="el-icon-bell" v-if="handlePermission('/user/userhome')"
                   @click.native="dump('/user/userhome?id=' + getUser.id)">主页</el-dropdown-item>
-                <el-dropdown-item v-if="handlePermission('/user/setting')" icon="el-icon-setting" @click.native="dump('/user/setting')">设置</el-dropdown-item>
+                <el-dropdown-item v-if="handlePermission('/user/setting')" icon="el-icon-setting"
+                  @click.native="dump('/user/setting')">设置</el-dropdown-item>
+                <el-dropdown-item icon="el-icon-user-solid"><span @click="pwdDialog = true">修改密码</span></el-dropdown-item>
                 <el-dropdown-item icon="el-icon-user-solid"><span @click="logout">退出</span></el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
-            <i v-if="handlePermission('/article/write')" class="el-icon-edit write"><span @click="dump('/article/write')">写文章</span></i>
-            <i v-if="handlePermission('/team/enlist')" class="el-icon-medal-1 write"><span @click="dump('/team/enlist')">找队员</span></i>
-            <i v-if="handlePermission('/material/upload')" class="el-icon-receiving write"><span @click="dump('/material/upload')">传资料</span></i>
+            <i v-if="handlePermission('/article/write')" class="el-icon-edit write"><span
+                @click="dump('/article/write')">写文章</span></i>
+            <i v-if="handlePermission('/team/enlist')" class="el-icon-medal-1 write"><span
+                @click="dump('/team/enlist')">找队员</span></i>
+            <i v-if="handlePermission('/material/upload')" class="el-icon-receiving write"><span
+                @click="dump('/material/upload')">传资料</span></i>
           </div>
         </el-menu-item>
       </el-menu>
     </div>
+    <el-dialog title="修改密码" :visible.sync="pwdDialog" style="height: 550px;">
+      <el-form :model="pwdDto">
+        <el-form-item label="旧密码" label-width="120px">
+          <el-input type="password" v-model="pwdDto.oldPwd" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" label-width="120px">
+          <el-input type="password" v-model="pwdDto.newPwd" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="pwdDialog = false">取 消</el-button>
+        <el-button type="primary" @click="changePwd">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -53,11 +72,17 @@ export default {
       avatar: {
         flag: false,
         src: 'https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png'
-      }
+      },
+      pwdDto: {
+        userId: '',
+        oldPwd: '',
+        newPwd: ''
+      },
+      pwdDialog: false
     };
   },
   computed: {
-    ...mapGetters('user', ['getUser','getPermissions'])
+    ...mapGetters('user', ['getUser', 'getPermissions'])
   },
   methods: {
     handleSelect(key, keyPath) {
@@ -68,7 +93,7 @@ export default {
 
       this.$router.push({
         path: '/focus/focusPage',
-        query: {searchVal: this.searchVal}
+        query: { searchVal: this.searchVal }
       });
     },
     dump(path) {
@@ -87,11 +112,26 @@ export default {
     },
     handlePermission(path) {
       // 页面权限判断
-      if(this.getPermissions && this.getPermissions.length > 0){
+      if (this.getPermissions && this.getPermissions.length > 0) {
         return this.getPermissions.includes(path)
-      }else{
+      } else {
         return false
       }
+    },
+    changePwd(){
+      this.pwdDto.userId = this.getUser.id;
+      if(this.pwdDto.oldPwd == '' || this.pwdDto.newPwd == ''){
+        this.$message.warning({message:'请检查输入项',offset:70});
+        return false;
+      }
+      this.$http.post('/user/changePwd',this.pwdDto).then(res => {
+        if(res.data.code === 2000){
+          this.$message.success({message:'修改成功',offset:70});
+          this.pwdDialog = false;
+        }else{
+          this.$message.warning({message:'修改成功',offset:70});
+        }
+      })
     }
   }
 };
@@ -161,5 +201,4 @@ export default {
 
 #tag {
   margin-left: 110px;
-}
-</style>
+}</style>

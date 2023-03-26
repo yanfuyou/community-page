@@ -244,12 +244,13 @@ export default {
             let scrollH = document.documentElement.scrollTop;
             if(documentH + scrollH + 5 >= windowH){
                 let now = Date.now()
+                let nextPage = firstPage++;
                 // 下一批数据加载需要在十秒之后
                 if(now - lastTime > 10 * 1000){
-                    this.setArticles(firstPage++)
-                    this.setSources(firstPage++);
-                    this.setHeadMas(firstPage++);
-                    this.setVideos(firstPage++);
+                    this.setArticles(nextPage)
+                    this.setSources(nextPage);
+                    this.setHeadMas(nextPage);
+                    this.setVideos(nextPage);
                     console.log('获取新数据');
                     lastTime = now;
                 }
