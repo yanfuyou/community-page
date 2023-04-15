@@ -142,6 +142,7 @@ export default {
             }
             this.$http.post('article/miniList', dto).then(res => {
                 this.articles = this.articles.concat(res.data.records.records);
+                this.articles = this.articles.filter((obj,index) => this.articles.findIndex(item => item.id === obj.id) === index );
             })
         },
         setSources(page) {
@@ -161,6 +162,7 @@ export default {
             this.$http.post('/material/list', maDto).then(res => {
                 if (res.data.code === 2000) {
                     this.sources = this.sources.concat(res.data.records.records);
+                    this.sources = this.sources.filter((obj,index) => this.sources.findIndex(item => item.id === obj.id) === index );
                 }
             })
         },
