@@ -18,7 +18,7 @@
                         <el-col v-if="getUser.id != null && getUser.id != ''" :span="1">
                             <i class="el-icon-warning-outline" title="举报" @click="handleAcc(articleId, 'article')"></i>
                         </el-col>
-                        <el-col :span="6">
+                        <el-col :span="4">
                             <el-tag v-for="tag in tags" :key="tag.id" type="tag.labelType">{{ tag.labelName }}</el-tag>
                         </el-col>
                         <el-col :span="7">
