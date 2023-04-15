@@ -95,7 +95,7 @@ export default {
             if (this.loading) {
                 return;
             }
-            if(this.temp == ''){
+            if(this.temp.reason == null){
                 this.$message.warning({message:'理由不能为空',offset:70})
                 return false;
             }

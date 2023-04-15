@@ -5,6 +5,9 @@
             <el-form-item label="用户名" prop="userName">
                 <el-input v-model="user.userName"></el-input>
             </el-form-item>
+            <el-form-item label="邮箱" prop="userEmail">
+                <el-input v-model="user.userEmail"></el-input>
+            </el-form-item>
             <el-form-item label="昵称" prop="userAlias">
                 <el-input v-model="user.userAlias"></el-input>
             </el-form-item>
@@ -37,6 +40,7 @@ export default {
         return {
             user: {
                 userName: '',
+                userEmail: '',
                 userAlias: '',
                 userPassword: '',
                 rePassword: ''
@@ -54,7 +58,11 @@ export default {
                     { validator: rePassword, trigger: 'blur' }
                 ],
                 userAlias: [
+                    { required: true, message: '别名不能为空', trigger: 'blur' },
                     { min: 3, max: 20, message: '长度在 3 到 20 个字符', trigger: 'blur' }
+                ],
+                userEmail: [
+                    { required: true, message: '邮箱不能为空', trigger: 'blur' }
                 ]
             }
         };

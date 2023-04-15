@@ -210,7 +210,7 @@ export default {
             this.comment.articleId = this.articleId;
         },
         releaseComment() {
-            if(this.temp == ''){
+            if(this.comment.content == ''){
                 this.$message.warning({message:'评论不能为空',offset:70})
                 return false;
             }
@@ -350,7 +350,7 @@ export default {
             if (this.loading) {
                 return;
             }
-            if(this.temp == ''){
+            if(this.temp.reason == null ){
                 this.$message.warning({message:'理由不能为空',offset:70})
                 return false;
             }
