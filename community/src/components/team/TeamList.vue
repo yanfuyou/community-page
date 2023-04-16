@@ -45,7 +45,7 @@
                         </el-radio-group>
                     </el-form-item>
                     <el-form-item size="large">
-                        <el-button @click="signUp(team)">我要报名</el-button>
+                        <el-button v-if="team.createBy != getUser.userName" @click="signUp(team)">我要报名</el-button>
                         <i v-if="getUser.id != null && getUser.id != ''" class="el-icon-warning-outline" title="举报"
                                                 @click="handleAcc(team.id, 'team')"></i>
                     </el-form-item>

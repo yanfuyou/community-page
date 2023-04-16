@@ -105,7 +105,7 @@ export default {
 }
 .studyImg{
     margin: 100px auto auto 200px;
-    height: 500px;
+    height: 450px;
     float: left;
 }
 </style>

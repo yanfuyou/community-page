@@ -17,8 +17,8 @@ export default {
 <style scoped>
 div {
     min-height: 800px;
-    /* margin: 10px 20px auto 20px; */
-    margin: 0;
+    margin: 0px 0px 60px 0px;
+    /* margin: 0; */
     padding: 0;
 }
 </style>
