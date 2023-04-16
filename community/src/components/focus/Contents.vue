@@ -150,7 +150,7 @@ export default {
                     size: 30,
                     queryParam: {
                         flag: '0',
-                        descr: this.searchVal
+                        descr: this.$route.query.searchVal
                     }
                 }
                 this.$http.post('/material/list', maDto).then(res => {
@@ -165,7 +165,7 @@ export default {
         },
         'getSearchVal': {
             handler(val) {
-                this.searchVal = val;
+                // this.searchVal = val;
                 // console.log(this.searchVal);
                 let dto = {
                     current: 1,

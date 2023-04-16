@@ -8,8 +8,8 @@ export default {
     install: function (vue) {
         // 创建一个axios
         let result = axios.create({
-            // baseURL: 'http://20.100.202.162:8081/community'
-            baseURL: 'http://localhost:8081/community'
+            baseURL: 'http://20.100.202.162:8081/community'
+            // baseURL: 'http://localhost:8081/community'
         })
         result.interceptors.request.use(
             config => {
