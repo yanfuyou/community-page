@@ -26,7 +26,7 @@ import Sources from '@/components/user/Sources.vue'
 import UserList from '@/components/index/UserList.vue'
 export default {
     created() {
-        this.searchVal = this.$route.query.searchVal;
+        // this.searchVal = this.$route.query.searchVal;
         this.setUsers();
         // 触底刷新
         let firstPage = 1;
@@ -53,7 +53,7 @@ export default {
                         size: 30,
                         queryParam: {
                             labelForSearch: this.checkedTags,
-                            articleContent: this.searchVal
+                            articleContent: this.$route.query.searchVal
                         }
                     }
                         // 设置文章
@@ -69,7 +69,7 @@ export default {
                         size: 30,
                         queryParam: {
                             flag: '0',
-                            descr: this.searchVal
+                            descr: this.$route.query.searchVal
                         }
                     }
                     this.$http.post('/material/list', maDto).then(res => {
@@ -135,7 +135,7 @@ export default {
                     size: 30,
                     queryParam: {
                         labelForSearch: this.checkedTags,
-                        articleContent: this.searchVal
+                        articleContent: this.$route.query.searchVal
                     }
                 }
                 // 设置文章
@@ -172,7 +172,7 @@ export default {
                     size: 30,
                     queryParam: {
                         labelForSearch: this.checkedTags,
-                        articleContent: this.searchVal
+                        articleContent: this.$route.query.searchVal
                     }
                 }
                 // 设置文章
@@ -187,7 +187,7 @@ export default {
                     size: 30,
                     queryParam: {
                         flag: '0',
-                        descr: this.searchVal
+                        descr: this.$route.query.searchVal
                     }
                 }
                 this.$http.post('/material/list', maDto).then(res => {
